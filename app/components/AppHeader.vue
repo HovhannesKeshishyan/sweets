@@ -1,31 +1,47 @@
 <script setup lang="ts">
-const { public: { siteName } } = useRuntimeConfig()
-const auth = useAuth()
-const cart = useCart()
+const {
+  public: { siteName },
+} = useRuntimeConfig();
+const auth = useAuth();
+const cart = useCart();
 
 const nav = [
   { label: "Shop", to: "/products" },
   { label: "Collections", to: "/collections" },
   { label: "Gifts", to: "/gifts" },
-]
+];
 
 const accountLink = computed(() => {
-  if (!auth.isLoggedIn.value) return { label: "Sign in", to: "/login" }
-  return auth.isAdmin.value ? { label: "Admin", to: "/admin" } : { label: "Account", to: "/account" }
-})
+  if (!auth.isLoggedIn.value) return { label: "Sign in", to: "/login" };
+  return auth.isAdmin.value
+    ? { label: "Admin", to: "/admin" }
+    : { label: "Account", to: "/account" };
+});
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 border-b border-cocoa-900/10 bg-ivory/85 backdrop-blur">
+  <header
+    class="sticky top-0 z-40 border-b border-cocoa-900/10 bg-ivory/85 backdrop-blur"
+  >
     <!-- Mobile: logo + account on one row, nav below. sm+: single row. -->
-    <div class="container-page flex flex-wrap items-center justify-between gap-x-6 py-3 sm:h-16 sm:flex-nowrap sm:py-0">
-      <NuxtLink to="/" class="font-display text-2xl tracking-wide text-cocoa-900">
+    <div
+      class="container-page flex flex-wrap items-center justify-between gap-x-6 py-3 sm:h-16 sm:flex-nowrap sm:py-0"
+    >
+      <NuxtLink
+        to="/"
+        class="font-display text-2xl tracking-wide text-cocoa-900"
+      >
         {{ siteName }}
       </NuxtLink>
-      <nav aria-label="Primary" class="order-last w-full pt-2 sm:order-none sm:ml-auto sm:w-auto sm:pt-0">
+      <nav
+        aria-label="Primary"
+        class="order-last w-full pt-2 sm:order-0 sm:ml-auto sm:w-auto sm:pt-0"
+      >
         <ul class="flex items-center gap-6 text-sm font-medium text-cocoa-700">
           <li v-for="item in nav" :key="item.to">
-            <NuxtLink :to="item.to" class="transition hover:text-gold-600">{{ item.label }}</NuxtLink>
+            <NuxtLink :to="item.to" class="transition hover:text-gold-600">{{
+              item.label
+            }}</NuxtLink>
           </li>
         </ul>
       </nav>
