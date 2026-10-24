@@ -6,8 +6,6 @@ import { Order, User, type IUser } from "../db/models";
 import { escapeRegex } from "./errors";
 import { toOrderSummary } from "./order.service";
 
-const broken: number = "not a number";
-
 interface OrderStats {
   _id: Types.ObjectId;
   orderCount: number;
