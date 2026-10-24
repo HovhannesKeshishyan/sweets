@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Use a real replica set so DB tests can't silently skip if
+      # mongodb-memory-server fails to download its binary.
+      MONGODB_TEST_URI: mongodb://localhost:27017/sweets_test?replicaSet=rs0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Start MongoDB replica set
+        run: |
+          docker run -d --name mongo -p 27017:27017 mongo:8 --replSet rs0 --bind_ip_all
+          for i in $(seq 1 30); do
+            docker exec mongo mongosh --quiet --eval "db.adminCommand('ping')" && break
+            sleep 2
+          done
+          docker exec mongo mongosh --quiet --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] })"
+
+      # Also runs `nuxt prepare` (postinstall), which generates .nuxt/tsconfig.*.json.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: ci
+    timeout-minutes: 20
+    env:
+      NUXT_MONGODB_URI: mongodb://localhost:27017/sweets_e2e?replicaSet=rs0
+      NUXT_PUBLIC_SITE_URL: http://localhost:3100
+      E2E_WITH_DB: "1"
+      E2E_ADMIN_EMAIL: admin@example.com
+      E2E_ADMIN_PASSWORD: admin-password-123
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Start MongoDB replica set
+        run: |
+          docker run -d --name mongo -p 27017:27017 mongo:8 --replSet rs0 --bind_ip_all
+          for i in $(seq 1 30); do
+            docker exec mongo mongosh --quiet --eval "db.adminCommand('ping')" && break
+            sleep 2
+          done
+          docker exec mongo mongosh --quiet --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] })"
+
+      - name: Generate session secret
+        run: echo "NUXT_SESSION_SECRET=$(openssl rand -base64 48 | tr -d '\n')" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Seed database
+        run: |
+          npm run seed -- --reset
+          ADMIN_PASSWORD="$E2E_ADMIN_PASSWORD" npm run create-admin -- --email "$E2E_ADMIN_EMAIL"
+
+      - name: E2E tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
