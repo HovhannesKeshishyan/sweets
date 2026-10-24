@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+
+/* Design tokens: chocolate, cream, ivory, restrained gold. */
+@theme {
+  --color-cocoa-950: #1c110b;
+  --color-cocoa-900: #2b1a12;
+  --color-cocoa-800: #3d261a;
+  --color-cocoa-700: #573826;
+  --color-cocoa-500: #8a5d43;
+  --color-cream-100: #f6eee2;
+  --color-cream-200: #ecdfcb;
+  --color-ivory: #fbf8f2;
+  --color-gold-400: #c9a45c;
+  --color-gold-500: #b48c44;
+  --color-gold-600: #94702f;
+
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-rise: rise 0.9s var(--ease-soft) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  html {
+    @apply bg-ivory text-cocoa-900 font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-medium tracking-tight;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-gold-500;
+  }
+
+  ::selection {
+    @apply bg-gold-400/40;
+  }
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.22em] uppercase text-gold-600;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition duration-300 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply btn bg-cocoa-900 text-cream-100 hover:bg-cocoa-800;
+}
+
+@utility btn-outline {
+  @apply btn border border-cocoa-900/25 text-cocoa-900 hover:border-gold-500 hover:text-gold-600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Form controls used by selects/textareas that don't go through FormField. */
+@utility field {
+  @apply w-full rounded-xl border border-cocoa-900/15 bg-white px-4 py-2.5 text-sm text-cocoa-900 focus:border-gold-500 focus:outline-none;
+}
+
+@utility field-label {
+  @apply text-sm font-medium text-cocoa-800;
+}
+
+@utility table-admin {
+  @apply w-full text-left text-sm [&_td]:px-4 [&_td]:py-3 [&_th]:px-4 [&_th]:py-3 [&_th]:text-xs [&_th]:font-semibold [&_th]:tracking-wide [&_th]:text-cocoa-500 [&_th]:uppercase [&_tbody_tr]:border-t [&_tbody_tr]:border-cocoa-900/10;
+}
