@@ -71,7 +71,7 @@ describe('image URL validation', () => {
   it('accepts http(s) and site paths, rejects other schemes and protocol-relative URLs', () => {
     const ok = (url: string) => imageInputSchema.safeParse({ url }).success
     expect(ok('https://res.cloudinary.com/x/image/upload/a.jpg')).toBe(true)
-    expect(ok('/images/seed/truffles-dark.svg')).toBe(true)
+    expect(ok('https://picsum.photos/seed/truffles-dark/800/1000')).toBe(true)
     expect(ok('//evil.example/a.png')).toBe(false)
     expect(ok('javascript:alert(1)')).toBe(false)
     expect(ok('/images/"><script>')).toBe(false)

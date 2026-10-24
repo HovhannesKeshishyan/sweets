@@ -46,7 +46,7 @@ test('admin creates a product that appears in the shop, then archives it', async
   await page.getByLabel('Stock').fill('9')
   await page.getByLabel('Status').selectOption('active')
   await page.getByLabel('Category').selectOption({ label: 'Bonbons' })
-  await page.getByLabel('Image URL').fill('/images/seed/bonbons-praline.svg')
+  await page.getByLabel('Image URL').fill('https://picsum.photos/seed/bonbons-praline/800/1000')
   await page.getByRole('button', { name: 'Add URL' }).click()
   await page.getByRole('button', { name: 'Create product' }).click()
   await expect(page.getByRole('heading', { level: 1, name })).toBeVisible()

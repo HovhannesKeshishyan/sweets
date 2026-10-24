@@ -101,8 +101,8 @@ For an existing email the account is promoted and its password reset. Admins sig
 
 ## Sample data
 
-`npm run seed` loads 5 categories, 16 products (with original SVG artwork in
-`public/images/seed/`), 3 coupons (`WELCOME10`, `GIFT15`, `SWEET5`) and shipping settings
+`npm run seed` loads 5 categories, 16 products (with placeholder photos from
+[Lorem Picsum](https://picsum.photos)), 3 coupons (`WELCOME10`, `GIFT15`, `SWEET5`) and shipping settings
 ($7 flat, free from $75). It runs only when the catalog is empty (`--reset` replaces categories,
 products, coupons and settings), never touches users or orders, and refuses to run with
 `NODE_ENV=production`. The data lives in `scripts/seed-data.ts`, separate from application code.

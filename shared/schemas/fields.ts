@@ -58,7 +58,7 @@ export const addressSchema = z.object({
 })
 
 export const imageInputSchema = z.object({
-  // An http(s) URL, or a site-relative path such as /images/seed/truffles.svg.
+  // An http(s) URL, or a site-relative path such as /uploads/truffles.svg.
   url: z.union(
     [
       z.url({ protocol: /^https?$/ }).max(2048),

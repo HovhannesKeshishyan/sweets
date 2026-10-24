@@ -4,14 +4,14 @@
  */
 
 const img = (name: string, alt: string) => ({
-  url: `/images/seed/${name}.svg`,
+  url: `https://picsum.photos/seed/${name}/800/1000`,
   alt,
   provider: "external" as const,
   width: 800,
   height: 1000,
 });
 const catImg = (name: string, alt: string) => ({
-  url: `/images/seed/${name}.svg`,
+  url: `https://picsum.photos/seed/${name}/800/600`,
   alt,
   provider: "external" as const,
   width: 800,
