@@ -27,11 +27,11 @@ export default defineNuxtConfig({
       cloudName: "",
       apiKey: "",
       apiSecret: "",
-      folder: "hksweets/products",
+      folder: "velourasweets/products",
     },
     public: {
       siteUrl: "http://localhost:3000",
-      siteName: "HK Sweets",
+      siteName: "Veloura Sweets",
       defaultCurrency: "USD",
     },
   },
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: "en" },
-      titleTemplate: "%s · HK Sweets",
+      titleTemplate: "%s · Veloura Sweets",
       meta: [
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "theme-color", content: "#2b1a12" },

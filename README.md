@@ -1,4 +1,4 @@
-# HK Sweets
+# Veloura Sweets
 
 A production-oriented e-commerce store for chocolates and confections, built as a single Nuxt 4
 application: SSR storefront, guest and registered checkout, coupons, and a full admin panel.
@@ -48,7 +48,7 @@ docker run -d --name mongo -p 27017:27017 mongo:8 --replSet rs0
 docker exec mongo mongosh --eval "rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]})"
 ```
 
-Then set `NUXT_MONGODB_URI=mongodb://localhost:27017/hksweets?replicaSet=rs0`.
+Then set `NUXT_MONGODB_URI=mongodb://localhost:27017/velourasweets?replicaSet=rs0`.
 Check: `curl http://localhost:3000/api/health` → `{"status":"ok","database":"up"}`.
 
 ## Environment variables
@@ -180,7 +180,7 @@ npm run build && npm run test:e2e
   **throwaway** seeded database — they place real orders:
 
   ```bash
-  export NUXT_MONGODB_URI="mongodb://localhost:27017/hksweets-e2e?replicaSet=rs0"
+  export NUXT_MONGODB_URI="mongodb://localhost:27017/velourasweets-e2e?replicaSet=rs0"
   npm run seed -- --reset
   ADMIN_PASSWORD=admin-password-123 npm run create-admin -- --email admin@example.com
   npm run build && PORT=3200 NUXT_PUBLIC_SITE_URL=http://localhost:3200 node .output/server/index.mjs &

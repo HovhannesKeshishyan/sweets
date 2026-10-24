@@ -384,7 +384,7 @@ export const seedCoupons = [
 ];
 
 export const seedSettings = {
-  storeName: "HK Sweets",
+  storeName: "Veloura Sweets",
   contactEmail: "hello@example.com",
   currency: "USD",
   shipping: {

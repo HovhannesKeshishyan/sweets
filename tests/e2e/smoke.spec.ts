@@ -4,7 +4,7 @@ test("homepage renders with SEO metadata and accessible landmarks", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/HK Sweets/);
+  await expect(page).toHaveTitle(/Veloura Sweets/);
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     "content",
     /chocolates/i,
