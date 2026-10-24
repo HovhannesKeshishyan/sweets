@@ -1,5 +1,5 @@
 import { createError } from "h3"
-import type { Types, type QueryFilter } from "mongoose";
+import type { Types, QueryFilter } from "mongoose"
 import type { Paginated } from "../../shared/schemas/common"
 import type { CustomerDTO, OrderSummaryDTO } from "../../shared/types/api"
 import { Order, User, type IUser } from "../db/models"
