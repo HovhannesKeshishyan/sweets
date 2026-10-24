@@ -1,5 +1,5 @@
-import { idParamsSchema } from '../../../../shared/schemas/common'
-import { getOrderById } from '../../../services/order.service'
+import { idParamsSchema } from "../../../../shared/schemas/common"
+import { getOrderById } from "../../../services/order.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

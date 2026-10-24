@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Paginated } from '#shared/schemas/common'
-import type { AdminProductDTO, CategoryDTO } from '#shared/types/api'
+import type { Paginated } from "#shared/schemas/common"
+import type { AdminProductDTO, CategoryDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'Products · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "Products · Admin", robots: "noindex, nofollow" })
 
 const route = useRoute()
 const router = useRouter()
-const str = (v: unknown) => (typeof v === 'string' && v ? v : undefined)
+const str = (v: unknown) => (typeof v === "string" && v ? v : undefined)
 const query = computed(() => ({
   q: str(route.query.q),
   status: str(route.query.status),
@@ -16,24 +16,24 @@ const query = computed(() => ({
   page: Math.max(1, Number(route.query.page) || 1),
 }))
 
-const { data, error, refresh } = await useFetch<Paginated<AdminProductDTO>>('/api/admin/products', { query })
-const { data: categories } = await useFetch<{ items: CategoryDTO[] }>('/api/admin/categories')
+const { data, error, refresh } = await useFetch<Paginated<AdminProductDTO>>("/api/admin/products", { query })
+const { data: categories } = await useFetch<{ items: CategoryDTO[] }>("/api/admin/categories")
 const { money } = useStore()
 
-const search = ref(query.value.q ?? '')
+const search = ref(query.value.q ?? "")
 function update(patch: Record<string, string | undefined>) {
   router.push({ query: { ...route.query, ...patch, page: undefined } })
 }
 
-const message = ref<{ tone: 'error' | 'success'; text: string } | null>(null)
+const message = ref<{ tone: "error" | "success"; text: string } | null>(null)
 async function archive(product: AdminProductDTO) {
   if (!confirm(`Archive “${product.name}”? It will be hidden from the shop. Past orders are unaffected.`)) return
   try {
-    await $fetch(`/api/admin/products/${product.id}`, { method: 'DELETE' })
-    message.value = { tone: 'success', text: `${product.name} archived.` }
+    await $fetch(`/api/admin/products/${product.id}`, { method: "DELETE" })
+    message.value = { tone: "success", text: `${product.name} archived.` }
     await refresh()
   } catch (e) {
-    message.value = { tone: 'error', text: apiErrorMessage(e) }
+    message.value = { tone: "error", text: apiErrorMessage(e) }
   }
 }
 </script>
@@ -47,7 +47,7 @@ async function archive(product: AdminProductDTO) {
     <div class="mb-6 flex flex-wrap gap-3">
       <form role="search" class="flex" @submit.prevent="update({ q: search.trim() || undefined })">
         <label for="product-search" class="sr-only">Search products</label>
-        <input id="product-search" v-model="search" type="search" placeholder="Name, SKU or tag" class="field rounded-r-none" />
+        <input id="product-search" v-model="search" type="search" placeholder="Name, SKU or tag" class="field rounded-r-none" >
         <button type="submit" class="rounded-r-xl bg-cocoa-900 px-4 text-sm text-cream-100">Search</button>
       </form>
       <label class="sr-only" for="f-status">Status</label>
@@ -95,7 +95,8 @@ async function archive(product: AdminProductDTO) {
                 </div>
               </td>
               <td>
-                <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize" :class="{
+                <span
+class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize" :class="{
                   'bg-emerald-100 text-emerald-900': p.status === 'active',
                   'bg-cream-200 text-cocoa-800': p.status === 'draft',
                   'bg-cocoa-900/10 text-cocoa-500': p.status === 'archived',

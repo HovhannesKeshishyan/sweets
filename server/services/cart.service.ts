@@ -1,9 +1,9 @@
-import { MAX_QUANTITY_PER_LINE } from '../../shared/constants'
-import type { ClientSession } from 'mongoose'
-import type { CartLineInput, QuoteDTO } from '../../shared/types/api'
-import { Coupon, Product, type ICoupon } from '../db/models'
-import { buildQuote, normalizeLines, type PricingCoupon, type PricingProduct, type Quote } from './pricing'
-import type { ResolvedSettings } from './settings.service'
+import { MAX_QUANTITY_PER_LINE } from "../../shared/constants"
+import type { ClientSession } from "mongoose"
+import type { CartLineInput, QuoteDTO } from "../../shared/types/api"
+import { Coupon, Product, type ICoupon } from "../db/models"
+import { buildQuote, normalizeLines, type PricingCoupon, type PricingProduct, type Quote } from "./pricing"
+import type { ResolvedSettings } from "./settings.service"
 
 export async function loadPricingProducts(
   lines: CartLineInput[],
@@ -12,7 +12,7 @@ export async function loadPricingProducts(
   const ids = [...new Set(lines.map((l) => l.productId))]
   if (!ids.length) return new Map()
   const products = await Product.find({ _id: { $in: ids } })
-    .select('name slug sku price stock status category images')
+    .select("name slug sku price stock status category images")
     .session(session ?? null)
     .lean()
   return new Map(
@@ -27,7 +27,7 @@ export async function loadPricingProducts(
         stock: p.stock,
         status: p.status,
         categoryId: p.category ? String(p.category) : null,
-        image: p.images[0] ? { url: p.images[0].url, alt: p.images[0].alt ?? '' } : null,
+        image: p.images[0] ? { url: p.images[0].url, alt: p.images[0].alt ?? "" } : null,
       },
     ]),
   )

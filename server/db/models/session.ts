@@ -1,5 +1,5 @@
-import { Schema, type Types } from 'mongoose'
-import { defineModel } from './_shared'
+import { Schema, type Types } from "mongoose"
+import { defineModel } from "./_shared"
 
 /**
  * Server-side session. Only an HMAC of the cookie token is stored, so a
@@ -19,7 +19,7 @@ export interface ISession {
 const sessionSchema = new Schema<ISession>(
   {
     tokenHash: { type: String, required: true, unique: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     expiresAt: { type: Date, required: true },
     userAgent: { type: String, maxlength: 300 },
     ip: { type: String, maxlength: 64 },
@@ -30,4 +30,4 @@ const sessionSchema = new Schema<ISession>(
 // MongoDB deletes expired sessions automatically.
 sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
 
-export const Session = defineModel<ISession>('Session', sessionSchema)
+export const Session = defineModel<ISession>("Session", sessionSchema)

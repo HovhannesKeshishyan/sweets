@@ -1,7 +1,7 @@
-import { LOW_STOCK_THRESHOLD, ORDER_STATUSES, type OrderStatus } from '../../shared/constants'
-import type { DashboardStatsDTO } from '../../shared/types/api'
-import { Order, Product, User } from '../db/models'
-import { toOrderSummary } from './order.service'
+import { LOW_STOCK_THRESHOLD, ORDER_STATUSES, type OrderStatus } from "../../shared/constants"
+import type { DashboardStatsDTO } from "../../shared/types/api"
+import { Order, Product, User } from "../db/models"
+import { toOrderSummary } from "./order.service"
 
 const DAY = 24 * 60 * 60 * 1000
 
@@ -13,32 +13,32 @@ export async function getDashboardStats(currency: string, now = new Date()): Pro
       Order.aggregate<{ _id: OrderStatus; count: number; recent: number }>([
         {
           $group: {
-            _id: '$status',
+            _id: "$status",
             count: { $sum: 1 },
-            recent: { $sum: { $cond: [{ $gte: ['$createdAt', since] }, 1, 0] } },
+            recent: { $sum: { $cond: [{ $gte: ["$createdAt", since] }, 1, 0] } },
           },
         },
       ]),
       Order.aggregate<{ _id: null; total: number; recent: number }>([
-        { $match: { status: { $ne: 'cancelled' } } },
+        { $match: { status: { $ne: "cancelled" } } },
         {
           $group: {
             _id: null,
-            total: { $sum: '$total' },
-            recent: { $sum: { $cond: [{ $gte: ['$createdAt', since] }, '$total', 0] } },
+            total: { $sum: "$total" },
+            recent: { $sum: { $cond: [{ $gte: ["$createdAt", since] }, "$total", 0] } },
           },
         },
       ]),
-      Product.aggregate<{ _id: string; count: number }>([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
-      Product.countDocuments({ status: 'active', stock: { $gt: 0, $lte: LOW_STOCK_THRESHOLD } }),
-      Product.countDocuments({ status: 'active', stock: { $lte: 0 } }),
-      User.countDocuments({ role: 'customer' }),
-      User.countDocuments({ role: 'customer', createdAt: { $gte: since } }),
+      Product.aggregate<{ _id: string; count: number }>([{ $group: { _id: "$status", count: { $sum: 1 } } }]),
+      Product.countDocuments({ status: "active", stock: { $gt: 0, $lte: LOW_STOCK_THRESHOLD } }),
+      Product.countDocuments({ status: "active", stock: { $lte: 0 } }),
+      User.countDocuments({ role: "customer" }),
+      User.countDocuments({ role: "customer", createdAt: { $gte: since } }),
       Order.find().sort({ createdAt: -1 }).limit(8).lean(),
-      Product.find({ status: 'active', stock: { $lte: LOW_STOCK_THRESHOLD } })
+      Product.find({ status: "active", stock: { $lte: LOW_STOCK_THRESHOLD } })
         .sort({ stock: 1 })
         .limit(8)
-        .select('name stock')
+        .select("name stock")
         .lean(),
     ])
 

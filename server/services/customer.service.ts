@@ -1,10 +1,10 @@
-import { createError } from 'h3'
-import { Types, type QueryFilter } from 'mongoose'
-import type { Paginated } from '../../shared/schemas/common'
-import type { CustomerDTO, OrderSummaryDTO } from '../../shared/types/api'
-import { Order, User, type IUser } from '../db/models'
-import { escapeRegex } from './errors'
-import { toOrderSummary } from './order.service'
+import { createError } from "h3"
+import type { Types, type QueryFilter } from "mongoose";
+import type { Paginated } from "../../shared/schemas/common"
+import type { CustomerDTO, OrderSummaryDTO } from "../../shared/types/api"
+import { Order, User, type IUser } from "../db/models"
+import { escapeRegex } from "./errors"
+import { toOrderSummary } from "./order.service"
 
 interface OrderStats {
   _id: Types.ObjectId
@@ -18,9 +18,9 @@ async function orderStatsFor(userIds: Types.ObjectId[]) {
     { $match: { user: { $in: userIds } } },
     {
       $group: {
-        _id: '$user',
+        _id: "$user",
         orderCount: { $sum: 1 },
-        totalSpent: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 0, '$total'] } },
+        totalSpent: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 0, "$total"] } },
       },
     },
   ])
@@ -43,9 +43,9 @@ function toCustomerDTO(u: IUser, stats?: OrderStats): CustomerDTO {
 }
 
 export async function listCustomers(query: { q?: string; page: number; limit: number }): Promise<Paginated<CustomerDTO>> {
-  const filter: QueryFilter<IUser> = { role: 'customer' }
+  const filter: QueryFilter<IUser> = { role: "customer" }
   if (query.q) {
-    const pattern = new RegExp(escapeRegex(query.q), 'i')
+    const pattern = new RegExp(escapeRegex(query.q), "i")
     filter.$or = [{ email: pattern }, { name: pattern }]
   }
   const [users, total] = await Promise.all([
@@ -68,7 +68,7 @@ export async function listCustomers(query: { q?: string; page: number; limit: nu
 
 export async function getCustomer(id: string): Promise<{ customer: CustomerDTO; orders: OrderSummaryDTO[] }> {
   const user = await User.findById(id).lean()
-  if (!user) throw createError({ statusCode: 404, statusMessage: 'Customer not found' })
+  if (!user) throw createError({ statusCode: 404, statusMessage: "Customer not found" })
   const [stats, orders] = await Promise.all([
     orderStatsFor([user._id]),
     Order.find({ user: user._id }).sort({ createdAt: -1 }).limit(100).lean(),

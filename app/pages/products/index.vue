@@ -1,58 +1,58 @@
 <script setup lang="ts">
-import type { Paginated } from '#shared/schemas/common'
-import type { CategoryDTO, ProductSummaryDTO } from '#shared/types/api'
+import type { Paginated } from "#shared/schemas/common"
+import type { CategoryDTO, ProductSummaryDTO } from "#shared/types/api"
 
 const route = useRoute()
 const router = useRouter()
 
 const SORT_OPTIONS = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: low to high' },
-  { value: 'price-desc', label: 'Price: high to low' },
-  { value: 'name', label: 'Name' },
+  { value: "featured", label: "Featured" },
+  { value: "newest", label: "Newest" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+  { value: "name", label: "Name" },
 ] as const
 
-const one = (v: unknown) => (typeof v === 'string' ? v : Array.isArray(v) && typeof v[0] === 'string' ? v[0] : undefined)
+const one = (v: unknown) => (typeof v === "string" ? v : Array.isArray(v) && typeof v[0] === "string" ? v[0] : undefined)
 
 // The URL is the source of truth for filters, so results are shareable and SSR-rendered.
 const query = computed(() => ({
   q: one(route.query.q) || undefined,
   category: one(route.query.category) || undefined,
   tag: one(route.query.tag) || undefined,
-  featured: one(route.query.featured) === 'true' ? 'true' : undefined,
-  onSale: one(route.query.onSale) === 'true' ? 'true' : undefined,
-  sort: SORT_OPTIONS.some((o) => o.value === one(route.query.sort)) ? one(route.query.sort) : 'featured',
+  featured: one(route.query.featured) === "true" ? "true" : undefined,
+  onSale: one(route.query.onSale) === "true" ? "true" : undefined,
+  sort: SORT_OPTIONS.some((o) => o.value === one(route.query.sort)) ? one(route.query.sort) : "featured",
   page: Math.max(1, Number(one(route.query.page)) || 1),
   limit: 12,
 }))
 
 const [{ data, error, status }, { data: categories }] = await Promise.all([
-  useFetch<Paginated<ProductSummaryDTO>>('/api/products', { query }),
-  useFetch<{ items: CategoryDTO[] }>('/api/categories', { key: 'categories' }),
+  useFetch<Paginated<ProductSummaryDTO>>("/api/products", { query }),
+  useFetch<{ items: CategoryDTO[] }>("/api/categories", { key: "categories" }),
 ])
 
 const activeCategory = computed(() => categories.value?.items.find((c) => c.slug === query.value.category))
 
 const heading = computed(() => {
   if (activeCategory.value) return activeCategory.value.name
-  if (query.value.onSale) return 'Seasonal offers'
-  if (query.value.featured) return 'Featured'
+  if (query.value.onSale) return "Seasonal offers"
+  if (query.value.featured) return "Featured"
   if (query.value.q) return `Results for “${query.value.q}”`
-  return 'All chocolates'
+  return "All chocolates"
 })
 
 usePageSeo({
   title: heading,
   description: () =>
     activeCategory.value?.description ??
-    'Browse handcrafted truffles, bars, bonbons and confections — filter by collection and price.',
+    "Browse handcrafted truffles, bars, bonbons and confections — filter by collection and price.",
 })
 
-const search = ref(query.value.q ?? '')
+const search = ref(query.value.q ?? "")
 watch(
   () => query.value.q,
-  (q) => (search.value = q ?? ''),
+  (q) => (search.value = q ?? ""),
 )
 
 function update(patch: Record<string, string | undefined>) {
@@ -75,7 +75,7 @@ function update(patch: Record<string, string | undefined>) {
           type="search"
           placeholder="Search truffles, pralines…"
           class="w-full rounded-l-full border border-r-0 border-cocoa-900/15 bg-white/70 px-5 py-2.5 text-sm focus:border-gold-500 focus:outline-none"
-        />
+        >
         <button type="submit" class="rounded-r-full bg-cocoa-900 px-5 text-sm font-semibold text-cream-100">Search</button>
       </form>
 

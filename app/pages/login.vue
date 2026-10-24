@@ -1,21 +1,21 @@
 <script setup lang="ts">
-useSeoMeta({ title: 'Sign in', robots: 'noindex' })
+useSeoMeta({ title: "Sign in", robots: "noindex" })
 
 const route = useRoute()
 const auth = useAuth()
-const form = reactive({ email: '', password: '' })
-const error = ref('')
+const form = reactive({ email: "", password: "" })
+const error = ref("")
 const pending = ref(false)
 
 async function submit() {
-  error.value = ''
+  error.value = ""
   pending.value = true
   try {
     const user = await auth.login(form.email, form.password)
-    const fallback = user.role === 'admin' ? '/admin' : '/account'
+    const fallback = user.role === "admin" ? "/admin" : "/account"
     await navigateTo(safeRedirect(route.query.redirect, fallback))
   } catch (e) {
-    error.value = apiErrorMessage(e, 'Unable to sign in. Please try again.')
+    error.value = apiErrorMessage(e, "Unable to sign in. Please try again.")
   } finally {
     pending.value = false
   }

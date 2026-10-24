@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ price: number; compareAtPrice?: number | null; size?: 'sm' | 'lg' }>()
+const props = defineProps<{ price: number; compareAtPrice?: number | null; size?: "sm" | "lg" }>()
 const { money } = useStore()
 const onSale = computed(() => props.compareAtPrice != null && props.compareAtPrice > props.price)
 </script>

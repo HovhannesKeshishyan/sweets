@@ -1,6 +1,6 @@
-import { createHmac, randomBytes } from 'node:crypto'
-import type { Types } from 'mongoose'
-import { Session, User, type IUser } from '../db/models'
+import { createHmac, randomBytes } from "node:crypto"
+import type { Types } from "mongoose"
+import { Session, User, type IUser } from "../db/models"
 
 export const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30 days
 /** Extend a session once less than this much lifetime remains (rolling sessions). */
@@ -8,12 +8,12 @@ const RENEW_THRESHOLD_MS = 15 * 24 * 60 * 60 * 1000
 
 /** 256-bit random token, URL-safe. Sent to the browser only in an HTTP-only cookie. */
 export function generateToken(): string {
-  return randomBytes(32).toString('base64url')
+  return randomBytes(32).toString("base64url")
 }
 
 /** Keyed hash of a token; this is the only form stored in the database. */
 export function hashToken(token: string, secret: string): string {
-  return createHmac('sha256', secret).update(token).digest('base64url')
+  return createHmac("sha256", secret).update(token).digest("base64url")
 }
 
 export interface SessionMeta {
@@ -34,7 +34,7 @@ export async function createSession(userId: Types.ObjectId, secret: string, meta
   return { token, expiresAt }
 }
 
-export type SessionUser = Pick<IUser, '_id' | 'email' | 'name' | 'role'>
+export type SessionUser = Pick<IUser, "_id" | "email" | "name" | "role">
 
 export interface ResolvedSession {
   user: SessionUser
@@ -56,7 +56,7 @@ export async function resolveSession(token: string, secret: string): Promise<Res
     return null
   }
 
-  const user = await User.findOne({ _id: session.user, isActive: true }).select('email name role').lean()
+  const user = await User.findOne({ _id: session.user, isActive: true }).select("email name role").lean()
   if (!user) {
     await Session.deleteOne({ _id: session._id })
     return null

@@ -6,13 +6,13 @@ const menuOpen = ref(false)
 watch(() => route.fullPath, () => (menuOpen.value = false))
 
 const nav = [
-  { label: 'Dashboard', to: '/admin', exact: true },
-  { label: 'Orders', to: '/admin/orders' },
-  { label: 'Products', to: '/admin/products' },
-  { label: 'Categories', to: '/admin/categories' },
-  { label: 'Coupons', to: '/admin/coupons' },
-  { label: 'Customers', to: '/admin/customers' },
-  { label: 'Settings', to: '/admin/settings' },
+  { label: "Dashboard", to: "/admin", exact: true },
+  { label: "Orders", to: "/admin/orders" },
+  { label: "Products", to: "/admin/products" },
+  { label: "Categories", to: "/admin/categories" },
+  { label: "Coupons", to: "/admin/coupons" },
+  { label: "Customers", to: "/admin/customers" },
+  { label: "Settings", to: "/admin/settings" },
 ]
 
 function isActive(item: { to: string; exact?: boolean }) {
@@ -21,7 +21,7 @@ function isActive(item: { to: string; exact?: boolean }) {
 
 async function signOut() {
   await auth.logout()
-  await navigateTo('/login')
+  await navigateTo("/login")
 }
 </script>
 

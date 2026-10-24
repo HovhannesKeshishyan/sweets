@@ -4,14 +4,14 @@ const auth = useAuth()
 const cart = useCart()
 
 const nav = [
-  { label: 'Shop', to: '/products' },
-  { label: 'Collections', to: '/collections' },
-  { label: 'Gifts', to: '/gifts' },
+  { label: "Shop", to: "/products" },
+  { label: "Collections", to: "/collections" },
+  { label: "Gifts", to: "/gifts" },
 ]
 
 const accountLink = computed(() => {
-  if (!auth.isLoggedIn.value) return { label: 'Sign in', to: '/login' }
-  return auth.isAdmin.value ? { label: 'Admin', to: '/admin' } : { label: 'Account', to: '/account' }
+  if (!auth.isLoggedIn.value) return { label: "Sign in", to: "/login" }
+  return auth.isAdmin.value ? { label: "Admin", to: "/admin" } : { label: "Account", to: "/account" }
 })
 </script>
 

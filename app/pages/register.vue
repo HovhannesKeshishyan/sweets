@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { PASSWORD_MIN_LENGTH } from '#shared/constants'
+import { PASSWORD_MIN_LENGTH } from "#shared/constants"
 
-useSeoMeta({ title: 'Create an account', robots: 'noindex' })
+useSeoMeta({ title: "Create an account", robots: "noindex" })
 
 const route = useRoute()
 const auth = useAuth()
-const form = reactive({ name: '', email: '', password: '' })
+const form = reactive({ name: "", email: "", password: "" })
 const fieldErrors = ref<Record<string, string>>({})
-const error = ref('')
+const error = ref("")
 const pending = ref(false)
 
 async function submit() {
-  error.value = ''
+  error.value = ""
   fieldErrors.value = {}
   pending.value = true
   try {
     await auth.register(form.name, form.email, form.password)
-    await navigateTo(safeRedirect(route.query.redirect, '/account'))
+    await navigateTo(safeRedirect(route.query.redirect, "/account"))
   } catch (e) {
     fieldErrors.value = apiFieldErrors(e)
     if (!Object.keys(fieldErrors.value).length) error.value = apiErrorMessage(e)

@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { Paginated } from '#shared/schemas/common'
-import type { CustomerDTO } from '#shared/types/api'
+import type { Paginated } from "#shared/schemas/common"
+import type { CustomerDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'Customers · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "Customers · Admin", robots: "noindex, nofollow" })
 
 const route = useRoute()
 const router = useRouter()
 const query = computed(() => ({
-  q: typeof route.query.q === 'string' && route.query.q ? route.query.q : undefined,
+  q: typeof route.query.q === "string" && route.query.q ? route.query.q : undefined,
   page: Math.max(1, Number(route.query.page) || 1),
   limit: 20,
 }))
-const { data, error } = await useFetch<Paginated<CustomerDTO>>('/api/admin/customers', { query })
+const { data, error } = await useFetch<Paginated<CustomerDTO>>("/api/admin/customers", { query })
 const { money } = useStore()
-const search = ref(query.value.q ?? '')
+const search = ref(query.value.q ?? "")
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const search = ref(query.value.q ?? '')
     <AdminPageHeader title="Customers" description="Registered accounts. Guest orders are listed under Orders." />
     <form role="search" class="mb-6 flex" @submit.prevent="router.push({ query: { q: search.trim() || undefined } })">
       <label for="customer-search" class="sr-only">Search customers</label>
-      <input id="customer-search" v-model="search" type="search" placeholder="Name or email" class="field w-72 rounded-r-none" />
+      <input id="customer-search" v-model="search" type="search" placeholder="Name or email" class="field w-72 rounded-r-none" >
       <button type="submit" class="rounded-r-xl bg-cocoa-900 px-4 text-sm text-cream-100">Search</button>
     </form>
 

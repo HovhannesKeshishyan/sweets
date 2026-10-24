@@ -1,5 +1,5 @@
-import { storeSettingsUpdateSchema } from '../../../shared/schemas/settings'
-import { updateStoreSettings } from '../../services/settings.service'
+import { storeSettingsUpdateSchema } from "../../../shared/schemas/settings"
+import { updateStoreSettings } from "../../services/settings.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

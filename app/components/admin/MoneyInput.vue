@@ -13,12 +13,12 @@ const { store } = useStore()
 const id = useId()
 
 const digits = computed(() => currencyFractionDigits(store.value.currency))
-const text = ref('')
+const text = ref("")
 watch(
   model,
   (minor) => {
-    const current = text.value.trim() === '' ? null : toMinorUnits(Number(text.value), store.value.currency)
-    if (minor !== current) text.value = minor == null ? '' : toMajorUnits(minor, store.value.currency).toFixed(digits.value)
+    const current = text.value.trim() === "" ? null : toMinorUnits(Number(text.value), store.value.currency)
+    if (minor !== current) text.value = minor == null ? "" : toMajorUnits(minor, store.value.currency).toFixed(digits.value)
   },
   { immediate: true },
 )
@@ -26,9 +26,9 @@ watch(
 function onInput(value: string) {
   text.value = value
   const n = Number(value)
-  model.value = value.trim() === '' || !Number.isFinite(n) || n < 0 ? null : toMinorUnits(n, store.value.currency)
+  model.value = value.trim() === "" || !Number.isFinite(n) || n < 0 ? null : toMinorUnits(n, store.value.currency)
 }
-const describedBy = computed(() => [props.hint && `${id}-hint`, props.error && `${id}-err`].filter(Boolean).join(' ') || undefined)
+const describedBy = computed(() => [props.hint && `${id}-hint`, props.error && `${id}-err`].filter(Boolean).join(" ") || undefined)
 </script>
 
 <template>
@@ -50,7 +50,7 @@ const describedBy = computed(() => [props.hint && `${id}-hint`, props.error && `
       class="rounded-xl border bg-white px-4 py-2.5 focus:border-gold-500 focus:outline-none"
       :class="error ? 'border-red-700/60' : 'border-cocoa-900/15'"
       @input="onInput(($event.target as HTMLInputElement).value)"
-    />
+    >
     <p v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-cocoa-500">{{ hint }}</p>
     <p v-if="error" :id="`${id}-err`" class="text-xs text-red-800">{{ error }}</p>
   </div>

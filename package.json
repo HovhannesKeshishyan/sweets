@@ -13,7 +13,9 @@
     "test:e2e": "playwright test",
     "create-admin": "tsx scripts/create-admin.ts",
     "seed": "tsx scripts/seed.ts",
-    "db:indexes": "tsx scripts/sync-indexes.ts"
+    "db:indexes": "tsx scripts/sync-indexes.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "h3": "^1.15.11",
@@ -23,11 +25,14 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.17.0",
     "@nuxt/test-utils": "^4.3.4",
     "@playwright/test": "^1.64.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.5",
     "@vue/test-utils": "latest",
+    "eslint": "^10.13.0",
     "happy-dom": "latest",
     "mongodb-memory-server": "^11.3.0",
     "tailwindcss": "^4.3.3",

@@ -1,7 +1,7 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 /** 24-char hex MongoDB ObjectId. */
-export const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, 'Invalid id')
+export const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, "Invalid id")
 
 export const MAX_PAGE_SIZE = 60
 

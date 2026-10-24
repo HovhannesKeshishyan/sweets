@@ -1,16 +1,16 @@
-import { randomInt, timingSafeEqual } from 'node:crypto'
-import { createError } from 'h3'
-import mongoose, { type QueryFilter, type Types } from 'mongoose'
-import type { OrderStatus } from '../../shared/constants'
-import type { CheckoutInput } from '../../shared/schemas/cart'
-import type { Paginated } from '../../shared/schemas/common'
-import { canTransition, type AdminOrderListQuery } from '../../shared/schemas/order'
-import type { OrderDTO, OrderSummaryDTO } from '../../shared/types/api'
-import { Coupon, Order, Product, type IOrder } from '../db/models'
-import { quoteCart, toQuoteDTO } from './cart.service'
-import { escapeRegex, isDuplicateKey } from './errors'
-import { generateToken, hashToken } from './session.service'
-import type { ResolvedSettings } from './settings.service'
+import { randomInt, timingSafeEqual } from "node:crypto"
+import { createError } from "h3"
+import mongoose, { type QueryFilter, type Types } from "mongoose"
+import type { OrderStatus } from "../../shared/constants"
+import type { CheckoutInput } from "../../shared/schemas/cart"
+import type { Paginated } from "../../shared/schemas/common"
+import { canTransition, type AdminOrderListQuery } from "../../shared/schemas/order"
+import type { OrderDTO, OrderSummaryDTO } from "../../shared/types/api"
+import { Coupon, Order, Product, type IOrder } from "../db/models"
+import { quoteCart, toQuoteDTO } from "./cart.service"
+import { escapeRegex, isDuplicateKey } from "./errors"
+import { generateToken, hashToken } from "./session.service"
+import type { ResolvedSettings } from "./settings.service"
 
 /* --------------------------------- Mapping --------------------------------- */
 
@@ -72,14 +72,14 @@ export function toOrderSummary(o: IOrder): OrderSummaryDTO {
 
 /* ------------------------------ Order numbers ------------------------------ */
 
-const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no 0/O/1/I
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789" // no 0/O/1/I
 
 /** e.g. MC-261024-7KQ2ZD — readable, not sequential (doesn't leak order volume). */
 export function generateOrderNumber(now = new Date()): string {
-  const yy = String(now.getUTCFullYear() % 100).padStart(2, '0')
-  const mm = String(now.getUTCMonth() + 1).padStart(2, '0')
-  const dd = String(now.getUTCDate()).padStart(2, '0')
-  let suffix = ''
+  const yy = String(now.getUTCFullYear() % 100).padStart(2, "0")
+  const mm = String(now.getUTCMonth() + 1).padStart(2, "0")
+  const dd = String(now.getUTCDate()).padStart(2, "0")
+  let suffix = ""
   for (let i = 0; i < 6; i++) suffix += ALPHABET[randomInt(ALPHABET.length)]
   return `MC-${yy}${mm}${dd}-${suffix}`
 }
@@ -111,10 +111,10 @@ export async function placeOrder(
   if (settings.shipping.allowedCountries.length && !settings.shipping.allowedCountries.includes(country)) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Validation failed',
+      statusMessage: "Validation failed",
       data: {
-        code: 'VALIDATION_ERROR',
-        issues: [{ path: 'shippingAddress.country', message: "Sorry, we don't ship to this country yet." }],
+        code: "VALIDATION_ERROR",
+        issues: [{ path: "shippingAddress.country", message: "Sorry, we don't ship to this country yet." }],
       },
     })
   }
@@ -127,27 +127,27 @@ export async function placeOrder(
       const quote = await quoteCart(input, settings, session)
 
       if (quote.issues.length) {
-        throw conflict('CART_CHANGED', 'Some items in your bag have changed. Please review it.', {
+        throw conflict("CART_CHANGED", "Some items in your bag have changed. Please review it.", {
           quote: toQuoteDTO(quote),
         })
       }
       if (input.couponCode && !quote.coupon) {
-        throw conflict('COUPON_INVALID', quote.couponError ?? 'This code is not valid.', { quote: toQuoteDTO(quote) })
+        throw conflict("COUPON_INVALID", quote.couponError ?? "This code is not valid.", { quote: toQuoteDTO(quote) })
       }
       if (quote.total !== input.expectedTotal) {
-        throw conflict('PRICE_CHANGED', 'Prices have changed since you started checkout. Please review your order.', {
+        throw conflict("PRICE_CHANGED", "Prices have changed since you started checkout. Please review your order.", {
           quote: toQuoteDTO(quote),
         })
       }
 
       for (const line of quote.lines) {
         const result = await Product.updateOne(
-          { _id: line.product.id, status: 'active', stock: { $gte: line.quantity } },
+          { _id: line.product.id, status: "active", stock: { $gte: line.quantity } },
           { $inc: { stock: -line.quantity } },
           { session },
         )
         if (result.modifiedCount !== 1) {
-          throw conflict('OUT_OF_STOCK', `Sorry, ${line.product.name} just sold out.`, { productId: line.product.id })
+          throw conflict("OUT_OF_STOCK", `Sorry, ${line.product.name} just sold out.`, { productId: line.product.id })
         }
       }
 
@@ -159,14 +159,14 @@ export async function placeOrder(
             $or: [
               { usageLimit: { $exists: false } },
               { usageLimit: null },
-              { $expr: { $lt: ['$usedCount', '$usageLimit'] } },
+              { $expr: { $lt: ["$usedCount", "$usageLimit"] } },
             ],
           },
           { $inc: { usedCount: 1 } },
           { session },
         )
         if (claimed.modifiedCount !== 1) {
-          throw conflict('COUPON_INVALID', 'This code has reached its usage limit.')
+          throw conflict("COUPON_INVALID", "This code has reached its usage limit.")
         }
       }
 
@@ -196,10 +196,10 @@ export async function placeOrder(
             coupon: quote.coupon
               ? { code: quote.coupon.code, type: quote.coupon.type, value: quote.coupon.value, discount: quote.coupon.discount }
               : undefined,
-            status: 'pending',
-            paymentStatus: 'unpaid',
+            status: "pending",
+            paymentStatus: "unpaid",
             notes: input.notes,
-            statusHistory: [{ status: 'pending', at: new Date() }],
+            statusHistory: [{ status: "pending", at: new Date() }],
             accessTokenHash: hashToken(accessToken, options.secret),
           },
         ],
@@ -207,12 +207,12 @@ export async function placeOrder(
       )
       created = order!.toObject()
     })
-    if (!created) throw new Error('Order transaction finished without an order')
+    if (!created) throw new Error("Order transaction finished without an order")
     return { order: toOrderDTO(created), accessToken }
   } catch (error) {
     if (isDuplicateKey(error)) {
       // Order-number collision (astronomically rare): ask the client to retry.
-      throw createError({ statusCode: 503, statusMessage: 'Please try placing your order again.' })
+      throw createError({ statusCode: 503, statusMessage: "Please try placing your order again." })
     }
     throw error
   } finally {
@@ -237,8 +237,8 @@ export async function getOrderForViewer(
   orderNumber: string,
   viewer: { userId?: Types.ObjectId | null; token?: string | null; secret: string },
 ): Promise<OrderDTO> {
-  const order = await Order.findOne({ orderNumber }).select('+accessTokenHash').lean()
-  const notFound = createError({ statusCode: 404, statusMessage: 'Order not found' })
+  const order = await Order.findOne({ orderNumber }).select("+accessTokenHash").lean()
+  const notFound = createError({ statusCode: 404, statusMessage: "Order not found" })
   if (!order) throw notFound
 
   const isOwner = Boolean(viewer.userId && order.user && order.user.equals(viewer.userId))
@@ -266,8 +266,8 @@ export async function listOrders(query: AdminOrderListQuery): Promise<Paginated<
   const filter: QueryFilter<IOrder> = {}
   if (query.status) filter.status = query.status
   if (query.q) {
-    const pattern = new RegExp(escapeRegex(query.q), 'i')
-    filter.$or = [{ orderNumber: pattern }, { 'customer.email': pattern }, { 'customer.name': pattern }]
+    const pattern = new RegExp(escapeRegex(query.q), "i")
+    filter.$or = [{ orderNumber: pattern }, { "customer.email": pattern }, { "customer.name": pattern }]
   }
   const [items, total] = await Promise.all([
     Order.find(filter)
@@ -288,7 +288,7 @@ export async function listOrders(query: AdminOrderListQuery): Promise<Paginated<
 
 export async function getOrderById(id: string): Promise<OrderDTO> {
   const order = await Order.findById(id).lean()
-  if (!order) throw createError({ statusCode: 404, statusMessage: 'Order not found' })
+  if (!order) throw createError({ statusCode: 404, statusMessage: "Order not found" })
   return toOrderDTO(order)
 }
 
@@ -307,7 +307,7 @@ export async function updateOrderStatus(
   try {
     await session.withTransaction(async () => {
       const order = await Order.findById(id).session(session).lean()
-      if (!order) throw createError({ statusCode: 404, statusMessage: 'Order not found' })
+      if (!order) throw createError({ statusCode: 404, statusMessage: "Order not found" })
       if (!canTransition(order.status, next)) {
         throw createError({ statusCode: 409, statusMessage: `An order that is ${order.status} cannot become ${next}.` })
       }
@@ -321,10 +321,10 @@ export async function updateOrderStatus(
         { session },
       )
       if (updated.modifiedCount !== 1) {
-        throw createError({ statusCode: 409, statusMessage: 'The order was changed by someone else. Reload and try again.' })
+        throw createError({ statusCode: 409, statusMessage: "The order was changed by someone else. Reload and try again." })
       }
 
-      if (next === 'cancelled') {
+      if (next === "cancelled") {
         for (const item of order.items) {
           await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } }, { session })
         }

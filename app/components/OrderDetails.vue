@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { OrderDTO } from '#shared/types/api'
+import type { OrderDTO } from "#shared/types/api"
 
 const props = defineProps<{ order: OrderDTO }>()
-const country = computed(() => new Intl.DisplayNames(['en'], { type: 'region' }).of(props.order.shippingAddress.country))
+const country = computed(() => new Intl.DisplayNames(["en"], { type: "region" }).of(props.order.shippingAddress.country))
 const money = (minor: number) => formatMoney(minor, props.order.currency)
 </script>
 
@@ -46,11 +46,11 @@ const money = (minor: number) => formatMoney(minor, props.order.currency)
       <div>
         <h2 class="font-display text-2xl">Delivery</h2>
         <address class="mt-3 leading-relaxed not-italic text-cocoa-800">
-          {{ order.customer.name }}<br />
-          {{ order.shippingAddress.line1 }}<br />
-          <template v-if="order.shippingAddress.line2">{{ order.shippingAddress.line2 }}<br /></template>
+          {{ order.customer.name }}<br >
+          {{ order.shippingAddress.line1 }}<br >
+          <template v-if="order.shippingAddress.line2">{{ order.shippingAddress.line2 }}<br ></template>
           {{ order.shippingAddress.city }}<template v-if="order.shippingAddress.region">, {{ order.shippingAddress.region }}</template>
-          {{ order.shippingAddress.postalCode }}<br />
+          {{ order.shippingAddress.postalCode }}<br >
           {{ country }}
         </address>
       </div>

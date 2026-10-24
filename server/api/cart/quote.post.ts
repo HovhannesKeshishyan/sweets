@@ -1,7 +1,7 @@
-import { cartQuoteSchema } from '../../../shared/schemas/cart'
-import { quoteCart, toQuoteDTO } from '../../services/cart.service'
-import { RATE_LIMITS } from '../../services/rate-limiter'
-import { getStoreSettings } from '../../services/settings.service'
+import { cartQuoteSchema } from "../../../shared/schemas/cart"
+import { quoteCart, toQuoteDTO } from "../../services/cart.service"
+import { RATE_LIMITS } from "../../services/rate-limiter"
+import { getStoreSettings } from "../../services/settings.service"
 
 /**
  * Prices a cart with current server-side prices, stock and coupon rules.
@@ -14,6 +14,6 @@ export default defineEventHandler(async (event) => {
 
   await useDatabase()
   const settings = await getStoreSettings(storeDefaults())
-  setHeader(event, 'Cache-Control', 'no-store')
+  setHeader(event, "Cache-Control", "no-store")
   return toQuoteDTO(await quoteCart(input, settings))
 })

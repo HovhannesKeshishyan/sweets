@@ -1,6 +1,6 @@
-import { productUpdateSchema } from '../../../../shared/schemas/catalog'
-import { idParamsSchema } from '../../../../shared/schemas/common'
-import { clearCompareAtPrice, updateProduct } from '../../../services/product.service'
+import { productUpdateSchema } from "../../../../shared/schemas/catalog"
+import { idParamsSchema } from "../../../../shared/schemas/common"
+import { clearCompareAtPrice, updateProduct } from "../../../services/product.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<Record<string, unknown>>(event)
 
   // `compareAtPrice: null` removes the promotional "was" price.
-  const clearCompareAt = body && typeof body === 'object' && body.compareAtPrice === null
+  const clearCompareAt = body && typeof body === "object" && body.compareAtPrice === null
   if (clearCompareAt) delete body.compareAtPrice
 
   const input = parseWith(productUpdateSchema, body)

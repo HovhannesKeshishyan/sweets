@@ -1,4 +1,4 @@
-import { listCoupons } from '../../../services/coupon.service'
+import { listCoupons } from "../../../services/coupon.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

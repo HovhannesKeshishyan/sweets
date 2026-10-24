@@ -1,5 +1,5 @@
-import { z } from 'zod'
-import { addressSchema, countryCodeSchema, currencySchema, emailSchema, minorAmountSchema, phoneSchema } from './fields'
+import { z } from "zod"
+import { addressSchema, countryCodeSchema, currencySchema, emailSchema, minorAmountSchema, phoneSchema } from "./fields"
 
 export const storeSettingsUpdateSchema = z
   .object({

@@ -70,9 +70,9 @@ export function createRateLimiter(store: RateLimitStore = new MemoryRateLimitSto
 
 /** Limits for sensitive endpoints. */
 export const RATE_LIMITS = {
-  login: { name: 'login', limit: 10, windowMs: 15 * 60_000 },
-  loginAccount: { name: 'login-account', limit: 5, windowMs: 15 * 60_000 },
-  register: { name: 'register', limit: 5, windowMs: 60 * 60_000 },
-  checkout: { name: 'checkout', limit: 20, windowMs: 15 * 60_000 },
-  coupon: { name: 'coupon', limit: 30, windowMs: 15 * 60_000 },
+  login: { name: "login", limit: 10, windowMs: 15 * 60_000 },
+  loginAccount: { name: "login-account", limit: 5, windowMs: 15 * 60_000 },
+  register: { name: "register", limit: 5, windowMs: 60 * 60_000 },
+  checkout: { name: "checkout", limit: 20, windowMs: 15 * 60_000 },
+  coupon: { name: "coupon", limit: 30, windowMs: 15 * 60_000 },
 } satisfies Record<string, RateLimitRule>

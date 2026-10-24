@@ -1,6 +1,6 @@
-import { Schema, type Types } from 'mongoose'
-import { PRODUCT_STATUSES, type ProductStatus } from '../../../shared/constants'
-import { cleanJson, defineModel, imageSchema, moneyField, type ImageRef } from './_shared'
+import { Schema, type Types } from "mongoose"
+import { PRODUCT_STATUSES, type ProductStatus } from "../../../shared/constants"
+import { cleanJson, defineModel, imageSchema, moneyField, type ImageRef } from "./_shared"
 
 export interface IProduct {
   _id: Types.ObjectId
@@ -38,7 +38,7 @@ const productSchema = new Schema<IProduct>(
     price: moneyField,
     compareAtPrice: { ...moneyField, required: false },
     images: { type: [imageSchema], default: [] },
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    category: { type: Schema.Types.ObjectId, ref: "Category" },
     tags: { type: [{ type: String, lowercase: true, trim: true, maxlength: 40 }], default: [] },
     ingredients: { type: String, trim: true, maxlength: 2000 },
     allergens: { type: [{ type: String, lowercase: true, trim: true, maxlength: 40 }], default: [] },
@@ -48,10 +48,10 @@ const productSchema = new Schema<IProduct>(
       required: true,
       min: 0,
       default: 0,
-      validate: { validator: Number.isSafeInteger, message: 'Stock must be an integer' },
+      validate: { validator: Number.isSafeInteger, message: "Stock must be an integer" },
     },
     isFeatured: { type: Boolean, default: false },
-    status: { type: String, enum: PRODUCT_STATUSES, default: 'draft', required: true },
+    status: { type: String, enum: PRODUCT_STATUSES, default: "draft", required: true },
   },
   { timestamps: true, toJSON: { transform: cleanJson } },
 )
@@ -61,6 +61,6 @@ productSchema.index({ status: 1, category: 1, createdAt: -1 })
 productSchema.index({ status: 1, isFeatured: 1 })
 productSchema.index({ status: 1, price: 1 })
 productSchema.index({ status: 1, tags: 1 })
-productSchema.index({ sku: 1 }, { unique: true, partialFilterExpression: { sku: { $type: 'string' } } })
+productSchema.index({ sku: 1 }, { unique: true, partialFilterExpression: { sku: { $type: "string" } } })
 
-export const Product = defineModel<IProduct>('Product', productSchema)
+export const Product = defineModel<IProduct>("Product", productSchema)

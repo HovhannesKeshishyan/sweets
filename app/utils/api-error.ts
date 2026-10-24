@@ -5,7 +5,7 @@ interface ApiErrorShape {
 }
 
 /** Human-readable message from a $fetch/H3 error. */
-export function apiErrorMessage(error: unknown, fallback = 'Something went wrong. Please try again.'): string {
+export function apiErrorMessage(error: unknown, fallback = "Something went wrong. Please try again."): string {
   const e = error as ApiErrorShape
   return e?.data?.statusMessage || e?.data?.message || e?.statusMessage || fallback
 }

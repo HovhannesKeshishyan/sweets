@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StockLevel } from '#shared/types/api'
+import type { StockLevel } from "#shared/types/api"
 
 defineProps<{ level: StockLevel }>()
 </script>

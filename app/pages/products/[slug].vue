@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProductDetailDTO, ProductSummaryDTO } from '#shared/types/api'
+import type { ProductDetailDTO, ProductSummaryDTO } from "#shared/types/api"
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
@@ -8,7 +8,7 @@ const { data, error } = await useFetch<{ product: ProductDetailDTO; related: Pro
   () => `/api/products/${encodeURIComponent(slug.value)}`,
 )
 if (error.value || !data.value) {
-  throw createError({ statusCode: error.value?.statusCode ?? 404, statusMessage: 'Product not found', fatal: true })
+  throw createError({ statusCode: error.value?.statusCode ?? 404, statusMessage: "Product not found", fatal: true })
 }
 
 const product = computed(() => data.value!.product)
@@ -35,25 +35,25 @@ usePageSeo({
 useHead({
   script: [
     {
-      type: 'application/ld+json',
+      type: "application/ld+json",
       // Structured data for rich results. JSON.stringify output is escaped for safe embedding.
       innerHTML: () =>
         JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Product',
+          "@context": "https://schema.org",
+          "@type": "Product",
           name: product.value.name,
           description: product.value.shortDescription ?? product.value.description,
           image: product.value.images.map((i) => i.url),
           category: product.value.category?.name,
           offers: {
-            '@type': 'Offer',
+            "@type": "Offer",
             url: new URL(`/products/${product.value.slug}`, siteUrl).toString(),
             priceCurrency: store.value.currency,
             price: toMajorUnits(product.value.price, store.value.currency).toFixed(currencyFractionDigits(store.value.currency)),
             availability:
-              product.value.stockLevel === 'out_of_stock' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+              product.value.stockLevel === "out_of_stock" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
           },
-        }).replace(/</g, '\\u003c'),
+        }).replace(/</g, "\\u003c"),
     },
   ],
 })

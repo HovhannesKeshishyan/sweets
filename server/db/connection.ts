@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose"
 
 /**
  * Global Mongoose settings, applied once before the first connection.
@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
  * updates and catalog filters): every request is parsed by Zod into primitives, and
  * `parseWith` rejects any `$`-prefixed or dotted keys before parsing.
  */
-mongoose.set('strictQuery', true)
+mongoose.set("strictQuery", true)
 
 let pending: Promise<typeof mongoose> | null = null
 
@@ -25,7 +25,7 @@ export interface ConnectOptions {
  */
 export function connectToDatabase(uri: string, options: ConnectOptions = {}): Promise<typeof mongoose> {
   if (!uri) {
-    return Promise.reject(new Error('MongoDB URI is not configured (set NUXT_MONGODB_URI).'))
+    return Promise.reject(new Error("MongoDB URI is not configured (set NUXT_MONGODB_URI)."))
   }
   if (mongoose.connection.readyState === mongoose.ConnectionStates.connected) {
     return Promise.resolve(mongoose)

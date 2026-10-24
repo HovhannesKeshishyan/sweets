@@ -1,4 +1,4 @@
-const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"])
 
 export function isSafeMethod(method: string): boolean {
   return SAFE_METHODS.has(method.toUpperCase())
@@ -12,7 +12,7 @@ export function isSafeMethod(method: string): boolean {
  */
 export function isAllowedOrigin(origin: string | undefined, requestHost: string | undefined, siteUrl: string): boolean {
   if (!origin) return true
-  if (origin === 'null') return false
+  if (origin === "null") return false
 
   let originUrl: URL
   try {

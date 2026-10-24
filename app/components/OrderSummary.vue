@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { QuoteDTO } from '#shared/types/api'
+import type { QuoteDTO } from "#shared/types/api"
 
 defineProps<{ quote: QuoteDTO }>()
 const { money } = useStore()

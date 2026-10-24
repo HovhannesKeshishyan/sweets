@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { AdminProductDTO } from '#shared/types/api'
+import type { AdminProductDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
+definePageMeta({ layout: "admin", middleware: "admin" })
 
 const route = useRoute()
 const { data: product, error } = await useFetch<AdminProductDTO>(() => `/api/admin/products/${route.params.id}`)
-useSeoMeta({ title: () => `${product.value?.name ?? 'Product'} · Admin`, robots: 'noindex, nofollow' })
+useSeoMeta({ title: () => `${product.value?.name ?? "Product"} · Admin`, robots: "noindex, nofollow" })
 
 function onSaved(updated: AdminProductDTO) {
   product.value = updated

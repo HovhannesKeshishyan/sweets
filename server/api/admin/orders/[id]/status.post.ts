@@ -1,6 +1,6 @@
-import { idParamsSchema } from '../../../../../shared/schemas/common'
-import { orderStatusUpdateSchema } from '../../../../../shared/schemas/order'
-import { updateOrderStatus } from '../../../../services/order.service'
+import { idParamsSchema } from "../../../../../shared/schemas/common"
+import { orderStatusUpdateSchema } from "../../../../../shared/schemas/order"
+import { updateOrderStatus } from "../../../../services/order.service"
 
 /** Updates fulfillment status only. Payment status can't be changed here. */
 export default defineEventHandler(async (event) => {

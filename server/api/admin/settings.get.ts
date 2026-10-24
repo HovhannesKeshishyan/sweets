@@ -1,4 +1,4 @@
-import { getStoreSettings } from '../../services/settings.service'
+import { getStoreSettings } from "../../services/settings.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

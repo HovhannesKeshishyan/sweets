@@ -1,15 +1,15 @@
-import { randomBytes } from 'node:crypto'
-import { createError, deleteCookie, getCookie, getHeader, setCookie, type H3Event } from 'h3'
-import type { Types } from 'mongoose'
+import { randomBytes } from "node:crypto"
+import { createError, deleteCookie, getCookie, getHeader, setCookie, type H3Event } from "h3"
+import type { Types } from "mongoose"
 import {
   createSession,
   resolveSession,
   revokeSession,
   SESSION_TTL_MS,
   type SessionUser,
-} from '../services/session.service'
+} from "../services/session.service"
 
-declare module 'h3' {
+declare module "h3" {
   interface H3EventContext {
     /** Cached per request: undefined = not looked up yet, null = anonymous. */
     sessionUser?: SessionUser | null
@@ -22,32 +22,32 @@ let devSecret: string | undefined
 export function getSessionSecret(): string {
   const { sessionSecret } = useRuntimeConfig()
   if (sessionSecret && sessionSecret.length >= 32) return sessionSecret
-  if (process.env.NODE_ENV === 'production') {
-    console.error('[auth] NUXT_SESSION_SECRET must be set to at least 32 characters.')
-    throw createError({ statusCode: 500, statusMessage: 'Server misconfigured' })
+  if (process.env.NODE_ENV === "production") {
+    console.error("[auth] NUXT_SESSION_SECRET must be set to at least 32 characters.")
+    throw createError({ statusCode: 500, statusMessage: "Server misconfigured" })
   }
   if (!devSecret) {
-    devSecret = randomBytes(48).toString('base64url')
-    console.warn('[auth] NUXT_SESSION_SECRET not set; using a temporary dev secret (sessions reset on restart).')
+    devSecret = randomBytes(48).toString("base64url")
+    console.warn("[auth] NUXT_SESSION_SECRET not set; using a temporary dev secret (sessions reset on restart).")
   }
   return devSecret
 }
 
 function isSecureSite(): boolean {
-  return useRuntimeConfig().public.siteUrl.startsWith('https://')
+  return useRuntimeConfig().public.siteUrl.startsWith("https://")
 }
 
 /** `__Host-` prefix pins the cookie to this host, HTTPS and path "/". Needs HTTPS. */
 export function sessionCookieName(): string {
-  return isSecureSite() ? '__Host-mc_session' : 'mc_session'
+  return isSecureSite() ? "__Host-mc_session" : "mc_session"
 }
 
 function writeSessionCookie(event: H3Event, token: string, expiresAt: Date) {
   setCookie(event, sessionCookieName(), token, {
     httpOnly: true,
     secure: isSecureSite(),
-    sameSite: 'lax',
-    path: '/',
+    sameSite: "lax",
+    path: "/",
     expires: expiresAt,
     maxAge: Math.floor(SESSION_TTL_MS / 1000),
   })
@@ -60,7 +60,7 @@ export async function startUserSession(event: H3Event, userId: Types.ObjectId) {
   if (previous) await revokeSession(previous, getSessionSecret())
 
   const { token, expiresAt } = await createSession(userId, getSessionSecret(), {
-    userAgent: getHeader(event, 'user-agent'),
+    userAgent: getHeader(event, "user-agent"),
     ip: getClientIp(event),
   })
   writeSessionCookie(event, token, expiresAt)
@@ -73,7 +73,7 @@ export async function endUserSession(event: H3Event) {
     await useDatabase()
     await revokeSession(token, getSessionSecret())
   }
-  deleteCookie(event, sessionCookieName(), { path: '/', secure: isSecureSite(), sameSite: 'lax' })
+  deleteCookie(event, sessionCookieName(), { path: "/", secure: isSecureSite(), sameSite: "lax" })
   event.context.sessionUser = null
 }
 
@@ -90,7 +90,7 @@ export async function getSessionUser(event: H3Event): Promise<SessionUser | null
   await useDatabase()
   const resolved = await resolveSession(token, getSessionSecret())
   if (!resolved) {
-    deleteCookie(event, sessionCookieName(), { path: '/' })
+    deleteCookie(event, sessionCookieName(), { path: "/" })
     event.context.sessionUser = null
     return null
   }
@@ -102,13 +102,13 @@ export async function getSessionUser(event: H3Event): Promise<SessionUser | null
 
 export async function requireUser(event: H3Event): Promise<SessionUser> {
   const user = await getSessionUser(event)
-  if (!user) throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+  if (!user) throw createError({ statusCode: 401, statusMessage: "Authentication required" })
   return user
 }
 
 export async function requireAdmin(event: H3Event): Promise<SessionUser> {
   const user = await requireUser(event)
-  if (user.role !== 'admin') throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+  if (user.role !== "admin") throw createError({ statusCode: 403, statusMessage: "Forbidden" })
   return user
 }
 

@@ -1,19 +1,19 @@
 /** Enumerations shared by models, schemas and UI. */
 
-export const USER_ROLES = ['customer', 'admin'] as const
+export const USER_ROLES = ["customer", "admin"] as const
 export type UserRole = (typeof USER_ROLES)[number]
 
-export const PRODUCT_STATUSES = ['draft', 'active', 'archived'] as const
+export const PRODUCT_STATUSES = ["draft", "active", "archived"] as const
 export type ProductStatus = (typeof PRODUCT_STATUSES)[number]
 
-export const COUPON_TYPES = ['percentage', 'fixed'] as const
+export const COUPON_TYPES = ["percentage", "fixed"] as const
 export type CouponType = (typeof COUPON_TYPES)[number]
 
 /** Fulfillment lifecycle, independent of payment. */
-export const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as const
+export const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"] as const
 export type OrderStatus = (typeof ORDER_STATUSES)[number]
 
-export const PAYMENT_STATUSES = ['unpaid', 'paid', 'refunded'] as const
+export const PAYMENT_STATUSES = ["unpaid", "paid", "refunded"] as const
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number]
 
 export const PASSWORD_MIN_LENGTH = 10

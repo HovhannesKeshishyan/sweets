@@ -1,5 +1,5 @@
-import { couponInputSchema } from '../../../../shared/schemas/coupon'
-import { createCoupon } from '../../../services/coupon.service'
+import { couponInputSchema } from "../../../../shared/schemas/coupon"
+import { createCoupon } from "../../../services/coupon.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

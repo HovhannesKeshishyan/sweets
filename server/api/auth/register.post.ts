@@ -1,6 +1,6 @@
-import { registerSchema } from '../../../shared/schemas/auth'
-import { RATE_LIMITS } from '../../services/rate-limiter'
-import { registerCustomer } from '../../services/auth.service'
+import { registerSchema } from "../../../shared/schemas/auth"
+import { RATE_LIMITS } from "../../services/rate-limiter"
+import { registerCustomer } from "../../services/auth.service"
 
 export default defineEventHandler(async (event) => {
   await enforceRateLimit(event, RATE_LIMITS.register)

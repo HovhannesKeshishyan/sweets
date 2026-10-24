@@ -10,7 +10,7 @@
  *     `paymentStatus: "paid"` and `payment.reference` for the matching order.
  *     The webhook is the only place an order may be marked paid.
  */
-import type { OrderDTO } from '../../shared/types/api'
+import type { OrderDTO } from "../../shared/types/api"
 
 export interface PaymentSession {
   /** Where to send the customer to pay (e.g. a Stripe Checkout URL). */

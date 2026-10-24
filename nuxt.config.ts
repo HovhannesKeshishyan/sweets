@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
+  modules: ["@nuxt/eslint"],
   compatibilityDate: "2026-10-01",
   devtools: { enabled: true },
 

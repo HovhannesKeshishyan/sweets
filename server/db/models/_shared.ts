@@ -1,4 +1,4 @@
-import mongoose, { Schema, type Model } from 'mongoose'
+import mongoose, { Schema, type Model } from "mongoose"
 
 /** Reuses a compiled model during dev hot reloads instead of throwing OverwriteModelError. */
 export function defineModel<T>(name: string, schema: Schema<T>): Model<T> {
@@ -10,13 +10,13 @@ export const moneyField = {
   type: Number,
   required: true,
   min: 0,
-  validate: { validator: Number.isSafeInteger, message: 'Amount must be an integer in minor units' },
+  validate: { validator: Number.isSafeInteger, message: "Amount must be an integer in minor units" },
 } as const
 
 export interface ImageRef {
   url: string
   alt: string
-  provider?: 'cloudinary' | 's3' | 'external'
+  provider?: "cloudinary" | "s3" | "external"
   publicId?: string
   width?: number
   height?: number
@@ -25,8 +25,8 @@ export interface ImageRef {
 export const imageSchema = new Schema<ImageRef>(
   {
     url: { type: String, required: true, trim: true, maxlength: 2048 },
-    alt: { type: String, default: '', trim: true, maxlength: 200 },
-    provider: { type: String, enum: ['cloudinary', 's3', 'external'], default: 'external' },
+    alt: { type: String, default: "", trim: true, maxlength: 200 },
+    provider: { type: String, enum: ["cloudinary", "s3", "external"], default: "external" },
     publicId: { type: String, trim: true, maxlength: 300 },
     width: { type: Number, min: 1 },
     height: { type: Number, min: 1 },

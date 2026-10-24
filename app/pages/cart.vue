@@ -1,9 +1,9 @@
 <script setup lang="ts">
-useSeoMeta({ title: 'Your bag', robots: 'noindex' })
+useSeoMeta({ title: "Your bag", robots: "noindex" })
 
 const cart = useCart()
 const { money } = useStore()
-const couponInput = ref('')
+const couponInput = ref("")
 
 // Re-price whenever the contents or coupon change (debounced for quantity clicks).
 let timer: ReturnType<typeof setTimeout> | undefined
@@ -14,7 +14,7 @@ function scheduleQuote() {
 
 onMounted(() => {
   cart.hydrate()
-  couponInput.value = cart.couponCode.value ?? ''
+  couponInput.value = cart.couponCode.value ?? ""
   if (cart.items.value.length) cart.refreshQuote()
 })
 onBeforeUnmount(() => clearTimeout(timer))
@@ -35,7 +35,7 @@ async function applyCoupon() {
 }
 
 async function removeCoupon() {
-  couponInput.value = ''
+  couponInput.value = ""
   cart.setCoupon(null)
   await cart.refreshQuote()
 }
@@ -120,7 +120,7 @@ const lines = computed(() => cart.quote.value?.lines ?? [])
                 class="w-full rounded-l-full border border-r-0 border-cocoa-900/15 bg-white px-4 py-2.5 text-sm uppercase focus:border-gold-500 focus:outline-none"
                 :aria-invalid="cart.quote.value?.couponError ? 'true' : undefined"
                 aria-describedby="coupon-msg"
-              />
+              >
               <button type="submit" class="rounded-r-full bg-cocoa-900 px-5 text-sm font-semibold text-cream-100" :disabled="cart.quoting.value">
                 Apply
               </button>

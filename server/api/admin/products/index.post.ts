@@ -1,5 +1,5 @@
-import { productInputSchema } from '../../../../shared/schemas/catalog'
-import { createProduct } from '../../../services/product.service'
+import { productInputSchema } from "../../../../shared/schemas/catalog"
+import { createProduct } from "../../../services/product.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

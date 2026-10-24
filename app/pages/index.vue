@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { CategoryDTO, ProductSummaryDTO } from '#shared/types/api'
+import type { CategoryDTO, ProductSummaryDTO } from "#shared/types/api"
 
 usePageSeo({
-  title: 'Fine chocolates & confections',
-  description: 'Handcrafted chocolates, truffles and confections, thoughtfully boxed for gifting.',
+  title: "Fine chocolates & confections",
+  description: "Handcrafted chocolates, truffles and confections, thoughtfully boxed for gifting.",
 })
 
 const { data } = await useFetch<{
@@ -11,12 +11,12 @@ const { data } = await useFetch<{
   gifts: ProductSummaryDTO[]
   onSale: ProductSummaryDTO[]
   categories: CategoryDTO[]
-}>('/api/home')
+}>("/api/home")
 
 const promises = [
-  { title: 'Made in small batches', text: 'Tempered by hand each week, so every box arrives at its best.' },
-  { title: 'Single-origin cacao', text: 'Sourced from growers we know, from Ecuador to Madagascar.' },
-  { title: 'Wrapped to be given', text: 'Every order is boxed and ribboned — no extra charge.' },
+  { title: "Made in small batches", text: "Tempered by hand each week, so every box arrives at its best." },
+  { title: "Single-origin cacao", text: "Sourced from growers we know, from Ecuador to Madagascar." },
+  { title: "Wrapped to be given", text: "Every order is boxed and ribboned — no extra charge." },
 ]
 </script>
 

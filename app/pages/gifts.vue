@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { Paginated } from '#shared/schemas/common'
-import type { ProductSummaryDTO } from '#shared/types/api'
+import type { Paginated } from "#shared/schemas/common"
+import type { ProductSummaryDTO } from "#shared/types/api"
 
 usePageSeo({
-  title: 'Gift collections',
-  description: 'Ribboned boxes of truffles and confections, ready to give — for birthdays, thank-yous and every occasion.',
+  title: "Gift collections",
+  description: "Ribboned boxes of truffles and confections, ready to give — for birthdays, thank-yous and every occasion.",
 })
 
 const route = useRoute()
 const page = computed(() => Math.max(1, Number(route.query.page) || 1))
-const { data, error } = await useFetch<Paginated<ProductSummaryDTO>>('/api/products', {
-  query: computed(() => ({ tag: 'gift', sort: 'featured', page: page.value, limit: 12 })),
+const { data, error } = await useFetch<Paginated<ProductSummaryDTO>>("/api/products", {
+  query: computed(() => ({ tag: "gift", sort: "featured", page: page.value, limit: 12 })),
 })
 </script>
 

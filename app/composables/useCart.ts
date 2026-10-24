@@ -1,5 +1,5 @@
-import { MAX_CART_LINES, MAX_QUANTITY_PER_LINE } from '#shared/constants'
-import type { ImageDTO, QuoteDTO } from '#shared/types/api'
+import { MAX_CART_LINES, MAX_QUANTITY_PER_LINE } from "#shared/constants"
+import type { ImageDTO, QuoteDTO } from "#shared/types/api"
 
 /**
  * Persistent guest cart, kept in localStorage. It stores product ids and
@@ -14,7 +14,7 @@ export interface CartItem {
   image: ImageDTO | null
 }
 
-const STORAGE_KEY = 'mc-cart-v1'
+const STORAGE_KEY = "mc-cart-v1"
 
 interface Persisted {
   items: CartItem[]
@@ -23,13 +23,13 @@ interface Persisted {
 
 function readStorage(): Persisted {
   try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') as Persisted | null
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") as Persisted | null
     if (!parsed || !Array.isArray(parsed.items)) return { items: [], couponCode: null }
     return {
       items: parsed.items
-        .filter((i) => typeof i?.productId === 'string' && Number.isInteger(i.quantity) && i.quantity > 0)
+        .filter((i) => typeof i?.productId === "string" && Number.isInteger(i.quantity) && i.quantity > 0)
         .slice(0, MAX_CART_LINES),
-      couponCode: typeof parsed.couponCode === 'string' ? parsed.couponCode : null,
+      couponCode: typeof parsed.couponCode === "string" ? parsed.couponCode : null,
     }
   } catch {
     return { items: [], couponCode: null }
@@ -37,12 +37,12 @@ function readStorage(): Persisted {
 }
 
 export function useCart() {
-  const items = useState<CartItem[]>('cart:items', () => [])
-  const couponCode = useState<string | null>('cart:coupon', () => null)
-  const hydrated = useState('cart:hydrated', () => false)
-  const quote = useState<QuoteDTO | null>('cart:quote', () => null)
-  const quoting = useState('cart:quoting', () => false)
-  const quoteError = useState<string | null>('cart:quoteError', () => null)
+  const items = useState<CartItem[]>("cart:items", () => [])
+  const couponCode = useState<string | null>("cart:coupon", () => null)
+  const hydrated = useState("cart:hydrated", () => false)
+  const quote = useState<QuoteDTO | null>("cart:quote", () => null)
+  const quoting = useState("cart:quoting", () => false)
+  const quoteError = useState<string | null>("cart:quoteError", () => null)
 
   function persist() {
     try {
@@ -59,7 +59,7 @@ export function useCart() {
     items.value = saved.items
     couponCode.value = saved.couponCode
     hydrated.value = true
-    window.addEventListener('storage', (event) => {
+    window.addEventListener("storage", (event) => {
       if (event.key !== STORAGE_KEY) return
       const next = readStorage()
       items.value = next.items
@@ -115,8 +115,8 @@ export function useCart() {
     quoting.value = true
     quoteError.value = null
     try {
-      const result = await $fetch<QuoteDTO>('/api/cart/quote', {
-        method: 'POST',
+      const result = await $fetch<QuoteDTO>("/api/cart/quote", {
+        method: "POST",
         body: {
           items: items.value.map((i) => ({ productId: i.productId, quantity: i.quantity })),
           couponCode: couponCode.value ?? undefined,
@@ -124,7 +124,7 @@ export function useCart() {
       })
       applyQuote(result)
     } catch (e) {
-      quoteError.value = apiErrorMessage(e, 'We could not update your bag. Please try again.')
+      quoteError.value = apiErrorMessage(e, "We could not update your bag. Please try again.")
     } finally {
       quoting.value = false
     }
@@ -135,7 +135,7 @@ export function useCart() {
   function applyQuote(result: QuoteDTO) {
     quote.value = result
     const priced = new Map(result.lines.map((l) => [l.productId, l]))
-    const unavailable = new Set(result.issues.filter((i) => i.code === 'unavailable').map((i) => i.productId))
+    const unavailable = new Set(result.issues.filter((i) => i.code === "unavailable").map((i) => i.productId))
     items.value = items.value
       .filter((i) => !unavailable.has(i.productId))
       .map((i) => {

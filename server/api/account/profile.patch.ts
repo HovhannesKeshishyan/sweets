@@ -1,5 +1,5 @@
-import { profileUpdateSchema } from '../../../shared/schemas/auth'
-import { updateProfile } from '../../services/user.service'
+import { profileUpdateSchema } from "../../../shared/schemas/auth"
+import { updateProfile } from "../../services/user.service"
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event)

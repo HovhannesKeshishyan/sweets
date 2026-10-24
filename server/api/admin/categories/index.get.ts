@@ -1,4 +1,4 @@
-import { listAllCategories } from '../../../services/category.service'
+import { listAllCategories } from "../../../services/category.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

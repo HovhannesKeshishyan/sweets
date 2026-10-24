@@ -1,6 +1,6 @@
-import { idParamsSchema } from '../../../../shared/schemas/common'
-import { couponUpdateSchema } from '../../../../shared/schemas/coupon'
-import { updateCoupon } from '../../../services/coupon.service'
+import { idParamsSchema } from "../../../../shared/schemas/common"
+import { couponUpdateSchema } from "../../../../shared/schemas/coupon"
+import { updateCoupon } from "../../../services/coupon.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

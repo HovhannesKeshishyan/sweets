@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { AdminProductDTO } from '#shared/types/api'
+import type { AdminProductDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'New product · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "New product · Admin", robots: "noindex, nofollow" })
 
 function onSaved(product: AdminProductDTO) {
   navigateTo(`/admin/products/${product.id}`)

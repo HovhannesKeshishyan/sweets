@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import type { OrderDTO, QuoteDTO } from '#shared/types/api'
+import type { OrderDTO, QuoteDTO } from "#shared/types/api"
 
-useSeoMeta({ title: 'Checkout', robots: 'noindex' })
+useSeoMeta({ title: "Checkout", robots: "noindex" })
 
 const cart = useCart()
 const auth = useAuth()
 const { store, money } = useStore()
 
 const form = reactive({
-  email: '',
-  name: '',
-  phone: '',
-  line1: '',
-  line2: '',
-  city: '',
-  region: '',
-  postalCode: '',
-  country: '',
-  notes: '',
+  email: "",
+  name: "",
+  phone: "",
+  line1: "",
+  line2: "",
+  city: "",
+  region: "",
+  postalCode: "",
+  country: "",
+  notes: "",
 })
 const fieldErrors = ref<Record<string, string>>({})
-const formError = ref('')
+const formError = ref("")
 const placing = ref(false)
 
 const countries = computed(() => countryOptions(store.value.shipping.allowedCountries))
 
 onMounted(async () => {
   cart.hydrate()
-  if (!cart.items.value.length) return navigateTo('/cart')
+  if (!cart.items.value.length) return navigateTo("/cart")
   await cart.refreshQuote()
 
   if (auth.user.value) {
@@ -36,8 +36,8 @@ onMounted(async () => {
     try {
       const { profile } = await $fetch<{
         profile: { phone: string | null; defaultAddress: Record<string, string | undefined> | null }
-      }>('/api/account/profile')
-      form.phone = profile.phone ?? ''
+      }>("/api/account/profile")
+      form.phone = profile.phone ?? ""
       if (profile.defaultAddress) Object.assign(form, profile.defaultAddress)
     } catch {
       // Prefill is a convenience only.
@@ -52,11 +52,11 @@ async function placeOrder() {
   const quote = cart.quote.value
   if (!quote || !quote.lines.length) return
   placing.value = true
-  formError.value = ''
+  formError.value = ""
   fieldErrors.value = {}
   try {
-    const result = await $fetch<{ order: OrderDTO; accessToken: string }>('/api/orders', {
-      method: 'POST',
+    const result = await $fetch<{ order: OrderDTO; accessToken: string }>("/api/orders", {
+      method: "POST",
       body: {
         items: cart.items.value.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         couponCode: cart.couponCode.value ?? undefined,
@@ -76,22 +76,22 @@ async function placeOrder() {
     cart.clear()
     await navigateTo({
       path: `/order/${result.order.orderNumber}`,
-      query: { token: result.accessToken, placed: '1' },
+      query: { token: result.accessToken, placed: "1" },
     })
   } catch (e) {
     const err = e as { statusCode?: number; data?: { data?: { code?: string; quote?: QuoteDTO } } }
     const detail = err.data?.data
     if (err.statusCode === 409 && detail?.quote) cart.applyQuote(detail.quote)
     else if (err.statusCode === 409) await cart.refreshQuote()
-    if (detail?.code === 'COUPON_INVALID') cart.setCoupon(null)
+    if (detail?.code === "COUPON_INVALID") cart.setCoupon(null)
 
     const issues = apiFieldErrors(e)
     fieldErrors.value = Object.fromEntries(
-      Object.entries(issues).map(([path, msg]) => [path.replace(/^customer\.|^shippingAddress\./, ''), msg]),
+      Object.entries(issues).map(([path, msg]) => [path.replace(/^customer\.|^shippingAddress\./, ""), msg]),
     )
     formError.value = Object.keys(issues).length
-      ? 'Please check the highlighted fields.'
-      : apiErrorMessage(e, 'We could not place your order. Please try again.')
+      ? "Please check the highlighted fields."
+      : apiErrorMessage(e, "We could not place your order. Please try again.")
   } finally {
     placing.value = false
   }

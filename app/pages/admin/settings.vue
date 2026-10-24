@@ -1,6 +1,6 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'Settings · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "Settings · Admin", robots: "noindex, nofollow" })
 
 interface Settings {
   storeName: string
@@ -12,25 +12,25 @@ interface Settings {
   uploadsEnabled: boolean
 }
 
-const { data, error, refresh } = await useFetch<Settings>('/api/admin/settings')
+const { data, error, refresh } = await useFetch<Settings>("/api/admin/settings")
 const storeState = useStore()
 
 const form = reactive({
-  storeName: '',
-  contactEmail: '',
-  contactPhone: '',
-  currency: 'USD',
+  storeName: "",
+  contactEmail: "",
+  contactPhone: "",
+  currency: "USD",
   flatRate: null as number | null,
   freeShippingThreshold: null as number | null,
-  allowedCountries: '',
-  line1: '',
-  line2: '',
-  city: '',
-  region: '',
-  postalCode: '',
-  country: '',
+  allowedCountries: "",
+  line1: "",
+  line2: "",
+  city: "",
+  region: "",
+  postalCode: "",
+  country: "",
 })
-const originalCurrency = ref('')
+const originalCurrency = ref("")
 
 watch(
   data,
@@ -39,38 +39,38 @@ watch(
     originalCurrency.value = s.currency
     Object.assign(form, {
       storeName: s.storeName,
-      contactEmail: s.contactEmail ?? '',
-      contactPhone: s.contactPhone ?? '',
+      contactEmail: s.contactEmail ?? "",
+      contactPhone: s.contactPhone ?? "",
       currency: s.currency,
       flatRate: s.shipping.flatRate,
       freeShippingThreshold: s.shipping.freeShippingThreshold,
-      allowedCountries: s.shipping.allowedCountries.join(', '),
-      line1: s.address?.line1 ?? '',
-      line2: s.address?.line2 ?? '',
-      city: s.address?.city ?? '',
-      region: s.address?.region ?? '',
-      postalCode: s.address?.postalCode ?? '',
-      country: s.address?.country ?? '',
+      allowedCountries: s.shipping.allowedCountries.join(", "),
+      line1: s.address?.line1 ?? "",
+      line2: s.address?.line2 ?? "",
+      city: s.address?.city ?? "",
+      region: s.address?.region ?? "",
+      postalCode: s.address?.postalCode ?? "",
+      country: s.address?.country ?? "",
     })
   },
   { immediate: true },
 )
 
 const fieldErrors = ref<Record<string, string>>({})
-const message = ref<{ tone: 'error' | 'success'; text: string } | null>(null)
+const message = ref<{ tone: "error" | "success"; text: string } | null>(null)
 const saving = ref(false)
 
 async function save() {
   if (form.currency.toUpperCase() !== originalCurrency.value &&
-    !confirm('Changing the currency does not convert existing prices. Product prices will be read in the new currency. Continue?')) return
+    !confirm("Changing the currency does not convert existing prices. Product prices will be read in the new currency. Continue?")) return
   saving.value = true
   fieldErrors.value = {}
   message.value = null
   const opt = (v: string) => (v.trim() ? v.trim() : null)
   const hasAddress = [form.line1, form.city, form.postalCode, form.country].some((v) => v.trim())
   try {
-    await $fetch('/api/admin/settings', {
-      method: 'PUT',
+    await $fetch("/api/admin/settings", {
+      method: "PUT",
       body: {
         storeName: form.storeName,
         contactEmail: opt(form.contactEmail),
@@ -87,10 +87,10 @@ async function save() {
       },
     })
     await Promise.all([refresh(), storeState.load(true)])
-    message.value = { tone: 'success', text: 'Settings saved.' }
+    message.value = { tone: "success", text: "Settings saved." }
   } catch (e) {
     fieldErrors.value = apiFieldErrors(e)
-    message.value = { tone: 'error', text: Object.keys(fieldErrors.value).length ? 'Please fix the highlighted fields.' : apiErrorMessage(e) }
+    message.value = { tone: "error", text: Object.keys(fieldErrors.value).length ? "Please fix the highlighted fields." : apiErrorMessage(e) }
   } finally {
     saving.value = false
   }

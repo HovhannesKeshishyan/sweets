@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { CategoryDTO } from '#shared/types/api'
+import type { CategoryDTO } from "#shared/types/api"
 
 usePageSeo({
-  title: 'Collections',
-  description: 'Truffles, bars, bonbons, caramels and more — browse our chocolate collections.',
+  title: "Collections",
+  description: "Truffles, bars, bonbons, caramels and more — browse our chocolate collections.",
 })
 
-const { data, error } = await useFetch<{ items: CategoryDTO[] }>('/api/categories', { key: 'categories' })
+const { data, error } = await useFetch<{ items: CategoryDTO[] }>("/api/categories", { key: "categories" })
 </script>
 
 <template>

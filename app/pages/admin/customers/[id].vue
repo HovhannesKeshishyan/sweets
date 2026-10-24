@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { CustomerDTO, OrderSummaryDTO } from '#shared/types/api'
+import type { CustomerDTO, OrderSummaryDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
+definePageMeta({ layout: "admin", middleware: "admin" })
 
 const route = useRoute()
 const { data, error } = await useFetch<{ customer: CustomerDTO; orders: OrderSummaryDTO[] }>(
   () => `/api/admin/customers/${route.params.id}`,
 )
-useSeoMeta({ title: () => `${data.value?.customer.name ?? 'Customer'} · Admin`, robots: 'noindex, nofollow' })
+useSeoMeta({ title: () => `${data.value?.customer.name ?? "Customer"} · Admin`, robots: "noindex, nofollow" })
 const { money } = useStore()
-const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en', { dateStyle: 'medium' }) : '—')
+const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("en", { dateStyle: "medium" }) : "—")
 </script>
 
 <template>

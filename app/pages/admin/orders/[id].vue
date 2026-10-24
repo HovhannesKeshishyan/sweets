@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import type { OrderStatus } from '#shared/constants'
-import { ORDER_TRANSITIONS } from '#shared/schemas/order'
-import type { OrderDTO } from '#shared/types/api'
+import type { OrderStatus } from "#shared/constants"
+import { ORDER_TRANSITIONS } from "#shared/schemas/order"
+import type { OrderDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
+definePageMeta({ layout: "admin", middleware: "admin" })
 
 const route = useRoute()
 const { data: order, error } = await useFetch<OrderDTO>(() => `/api/admin/orders/${route.params.id}`)
-useSeoMeta({ title: () => `${order.value?.orderNumber ?? 'Order'} · Admin`, robots: 'noindex, nofollow' })
+useSeoMeta({ title: () => `${order.value?.orderNumber ?? "Order"} · Admin`, robots: "noindex, nofollow" })
 
 const next = computed(() => (order.value ? ORDER_TRANSITIONS[order.value.status] : []))
-const note = ref('')
+const note = ref("")
 const updating = ref(false)
-const message = ref<{ tone: 'error' | 'success'; text: string } | null>(null)
+const message = ref<{ tone: "error" | "success"; text: string } | null>(null)
 
 const ACTION_LABELS: Record<OrderStatus, string> = {
-  pending: 'Mark received',
-  processing: 'Start preparing',
-  shipped: 'Mark shipped',
-  delivered: 'Mark delivered',
-  cancelled: 'Cancel order',
+  pending: "Mark received",
+  processing: "Start preparing",
+  shipped: "Mark shipped",
+  delivered: "Mark delivered",
+  cancelled: "Cancel order",
 }
 
 async function setStatus(status: OrderStatus) {
-  if (status === 'cancelled' && !confirm('Cancel this order? Stock will be returned to inventory.')) return
+  if (status === "cancelled" && !confirm("Cancel this order? Stock will be returned to inventory.")) return
   updating.value = true
   message.value = null
   try {
     order.value = await $fetch<OrderDTO>(`/api/admin/orders/${route.params.id}/status`, {
-      method: 'POST',
+      method: "POST",
       body: { status, note: note.value.trim() || undefined },
     })
-    note.value = ''
-    message.value = { tone: 'success', text: `Order is now ${ORDER_STATUS_LABELS[status].toLowerCase()}.` }
+    note.value = ""
+    message.value = { tone: "success", text: `Order is now ${ORDER_STATUS_LABELS[status].toLowerCase()}.` }
   } catch (e) {
-    message.value = { tone: 'error', text: apiErrorMessage(e) }
+    message.value = { tone: "error", text: apiErrorMessage(e) }
   } finally {
     updating.value = false
   }

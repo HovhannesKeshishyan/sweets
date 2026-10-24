@@ -1,6 +1,6 @@
-import { loginSchema } from '../../../shared/schemas/auth'
-import { RATE_LIMITS } from '../../services/rate-limiter'
-import { authenticate } from '../../services/auth.service'
+import { loginSchema } from "../../../shared/schemas/auth"
+import { RATE_LIMITS } from "../../services/rate-limiter"
+import { authenticate } from "../../services/auth.service"
 
 export default defineEventHandler(async (event) => {
   await enforceRateLimit(event, RATE_LIMITS.login)

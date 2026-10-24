@@ -1,9 +1,9 @@
-import mongoose from 'mongoose'
-import { afterAll, beforeAll, beforeEach, inject } from 'vitest'
-import { connectToDatabase, disconnectFromDatabase } from '../../server/db/connection'
-import '../../server/db/models' // registers every model
+import mongoose from "mongoose"
+import { afterAll, beforeAll, beforeEach, inject } from "vitest"
+import { connectToDatabase, disconnectFromDatabase } from "../../server/db/connection"
+import "../../server/db/models" // registers every model
 
-export const mongoUri = inject('mongoUri')
+export const mongoUri = inject("mongoUri")
 export const hasDatabase = Boolean(mongoUri)
 
 /**

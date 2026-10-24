@@ -27,7 +27,7 @@ function set(value: number) {
       class="w-12 [appearance:textfield] bg-transparent text-center text-sm font-semibold focus:outline-none [&::-webkit-inner-spin-button]:appearance-none"
       :aria-label="`${label}, quantity`"
       @change="set(Number(($event.target as HTMLInputElement).value))"
-    />
+    >
     <button
       type="button"
       class="grid h-10 w-10 place-items-center rounded-full text-lg hover:bg-cream-200 disabled:opacity-30"

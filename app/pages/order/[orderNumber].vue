@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { OrderDTO } from '#shared/types/api'
+import type { OrderDTO } from "#shared/types/api"
 
-useSeoMeta({ title: 'Your order', robots: 'noindex' })
+useSeoMeta({ title: "Your order", robots: "noindex" })
 
 const route = useRoute()
 const orderNumber = computed(() => String(route.params.orderNumber))
-const token = computed(() => (typeof route.query.token === 'string' ? route.query.token : undefined))
-const justPlaced = computed(() => route.query.placed === '1')
+const token = computed(() => (typeof route.query.token === "string" ? route.query.token : undefined))
+const justPlaced = computed(() => route.query.placed === "1")
 
 const { data: order, error } = await useFetch<OrderDTO>(() => `/api/orders/${encodeURIComponent(orderNumber.value)}`, {
   query: { token },
-  headers: useRequestHeaders(['cookie']),
+  headers: useRequestHeaders(["cookie"]),
 })
 
 const placedOn = computed(() =>
-  order.value ? new Date(order.value.createdAt).toLocaleDateString('en', { dateStyle: 'long' }) : '',
+  order.value ? new Date(order.value.createdAt).toLocaleDateString("en", { dateStyle: "long" }) : "",
 )
 </script>
 

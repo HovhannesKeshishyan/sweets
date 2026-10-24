@@ -1,7 +1,7 @@
-import { z } from 'zod'
-import { COUPON_TYPES } from '../constants'
-import { objectIdSchema } from './common'
-import { minorAmountSchema } from './fields'
+import { z } from "zod"
+import { COUPON_TYPES } from "../constants"
+import { objectIdSchema } from "./common"
+import { minorAmountSchema } from "./fields"
 
 const couponFields = {
   code: z
@@ -10,7 +10,7 @@ const couponFields = {
     .toUpperCase()
     .min(3)
     .max(40)
-    .regex(/^[A-Z0-9_-]+$/, 'Use letters, numbers, hyphens or underscores'),
+    .regex(/^[A-Z0-9_-]+$/, "Use letters, numbers, hyphens or underscores"),
   description: z.string().trim().max(300),
   type: z.enum(COUPON_TYPES),
   value: z.number().int().min(1),
@@ -32,11 +32,11 @@ type CouponShape = {
 }
 
 function couponRules(c: CouponShape, ctx: z.RefinementCtx) {
-  if (c.type === 'percentage' && c.value !== undefined && c.value > 100) {
-    ctx.addIssue({ code: 'custom', path: ['value'], message: 'Percentage cannot exceed 100' })
+  if (c.type === "percentage" && c.value !== undefined && c.value > 100) {
+    ctx.addIssue({ code: "custom", path: ["value"], message: "Percentage cannot exceed 100" })
   }
   if (c.startsAt && c.expiresAt && c.expiresAt <= c.startsAt) {
-    ctx.addIssue({ code: 'custom', path: ['expiresAt'], message: 'Expiry must be after the start date' })
+    ctx.addIssue({ code: "custom", path: ["expiresAt"], message: "Expiry must be after the start date" })
   }
 }
 

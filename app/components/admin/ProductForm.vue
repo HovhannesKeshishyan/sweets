@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import type { ImageInput } from '#shared/schemas/fields'
-import type { AdminProductDTO, CategoryDTO } from '#shared/types/api'
+import type { ImageInput } from "#shared/schemas/fields"
+import type { AdminProductDTO, CategoryDTO } from "#shared/types/api"
 
 const props = defineProps<{ product?: AdminProductDTO | null }>()
 const emit = defineEmits<{ saved: [product: AdminProductDTO] }>()
 
-const { data: categories } = await useFetch<{ items: CategoryDTO[] }>('/api/admin/categories')
-const { data: settings } = await useFetch<{ uploadsEnabled: boolean }>('/api/admin/settings', { key: 'admin-settings-upload' })
+const { data: categories } = await useFetch<{ items: CategoryDTO[] }>("/api/admin/categories")
+const { data: settings } = await useFetch<{ uploadsEnabled: boolean }>("/api/admin/settings", { key: "admin-settings-upload" })
 
-const csv = (list: string[]) => list.join(', ')
-const fromCsv = (text: string) => text.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean)
+const csv = (list: string[]) => list.join(", ")
+const fromCsv = (text: string) => text.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean)
 
 function initial() {
   const p = props.product
   return {
-    name: p?.name ?? '',
-    slug: p?.slug ?? '',
-    sku: p?.sku ?? '',
-    shortDescription: p?.shortDescription ?? '',
-    description: p?.description ?? '',
+    name: p?.name ?? "",
+    slug: p?.slug ?? "",
+    sku: p?.sku ?? "",
+    shortDescription: p?.shortDescription ?? "",
+    description: p?.description ?? "",
     price: (p?.price ?? null) as number | null,
     compareAtPrice: (p?.compareAtPrice ?? null) as number | null,
-    category: p?.categoryId ?? '',
+    category: p?.categoryId ?? "",
     tags: csv(p?.tags ?? []),
-    ingredients: p?.ingredients ?? '',
+    ingredients: p?.ingredients ?? "",
     allergens: csv(p?.allergens ?? []),
-    weightGrams: p?.weightGrams != null ? String(p.weightGrams) : '',
+    weightGrams: p?.weightGrams != null ? String(p.weightGrams) : "",
     stock: String(p?.stock ?? 0),
     isFeatured: p?.isFeatured ?? false,
-    status: p?.status ?? 'draft',
+    status: p?.status ?? "draft",
     images: (p?.images ?? []).map((i) => ({ url: i.url, alt: i.alt, width: i.width, height: i.height })) as ImageInput[],
   }
 }
@@ -37,16 +37,16 @@ const form = reactive(initial())
 watch(() => props.product, () => Object.assign(form, initial()))
 
 const fieldErrors = ref<Record<string, string>>({})
-const message = ref<{ tone: 'error' | 'success'; text: string } | null>(null)
+const message = ref<{ tone: "error" | "success"; text: string } | null>(null)
 const saving = ref(false)
-const newImageUrl = ref('')
+const newImageUrl = ref("")
 const uploading = ref(false)
 
 function addImageUrl() {
   const url = newImageUrl.value.trim()
   if (!url) return
-  form.images.push({ url, alt: '', provider: 'external' })
-  newImageUrl.value = ''
+  form.images.push({ url, alt: "", provider: "external" })
+  newImageUrl.value = ""
 }
 
 function moveImage(index: number, delta: number) {
@@ -64,14 +64,14 @@ async function upload(event: Event) {
   message.value = null
   try {
     const body = new FormData()
-    body.append('file', file)
-    const image = await $fetch<ImageInput>('/api/admin/uploads', { method: 'POST', body })
+    body.append("file", file)
+    const image = await $fetch<ImageInput>("/api/admin/uploads", { method: "POST", body })
     form.images.push({ ...image, alt: form.name })
   } catch (e) {
-    message.value = { tone: 'error', text: apiErrorMessage(e, 'Upload failed.') }
+    message.value = { tone: "error", text: apiErrorMessage(e, "Upload failed.") }
   } finally {
     uploading.value = false
-    input.value = ''
+    input.value = ""
   }
 }
 
@@ -103,13 +103,13 @@ async function save() {
   message.value = null
   try {
     const product = props.product
-      ? await $fetch<AdminProductDTO>(`/api/admin/products/${props.product.id}`, { method: 'PATCH', body: payload() })
-      : await $fetch<AdminProductDTO>('/api/admin/products', { method: 'POST', body: payload() })
-    message.value = { tone: 'success', text: 'Product saved.' }
-    emit('saved', product)
+      ? await $fetch<AdminProductDTO>(`/api/admin/products/${props.product.id}`, { method: "PATCH", body: payload() })
+      : await $fetch<AdminProductDTO>("/api/admin/products", { method: "POST", body: payload() })
+    message.value = { tone: "success", text: "Product saved." }
+    emit("saved", product)
   } catch (e) {
     fieldErrors.value = apiFieldErrors(e)
-    message.value = { tone: 'error', text: Object.keys(fieldErrors.value).length ? 'Please fix the highlighted fields.' : apiErrorMessage(e) }
+    message.value = { tone: "error", text: Object.keys(fieldErrors.value).length ? "Please fix the highlighted fields." : apiErrorMessage(e) }
   } finally {
     saving.value = false
   }
@@ -145,7 +145,7 @@ async function save() {
             <ProductImage :image="{ url: img.url, alt: img.alt }" :label="form.name || 'Image'" :width="160" class="h-16 w-16 shrink-0 rounded-lg" />
             <div class="flex-1 space-y-1">
               <label :for="`img-alt-${i}`" class="sr-only">Alt text for image {{ i + 1 }}</label>
-              <input :id="`img-alt-${i}`" v-model="img.alt" class="field" placeholder="Alt text" maxlength="200" />
+              <input :id="`img-alt-${i}`" v-model="img.alt" class="field" placeholder="Alt text" maxlength="200" >
               <p class="truncate text-xs text-cocoa-500">{{ img.url }}</p>
             </div>
             <div class="flex flex-col gap-1 text-xs">
@@ -160,11 +160,11 @@ async function save() {
         </p>
         <div class="flex flex-wrap gap-3">
           <label for="new-image" class="sr-only">Image URL</label>
-          <input id="new-image" v-model="newImageUrl" type="url" placeholder="https://…" class="field flex-1" @keydown.enter.prevent="addImageUrl" />
+          <input id="new-image" v-model="newImageUrl" type="url" placeholder="https://…" class="field flex-1" @keydown.enter.prevent="addImageUrl" >
           <button type="button" class="btn-outline" @click="addImageUrl">Add URL</button>
           <label v-if="settings?.uploadsEnabled" class="btn-outline cursor-pointer" :class="{ 'opacity-50': uploading }">
             {{ uploading ? 'Uploading…' : 'Upload image' }}
-            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" class="sr-only" :disabled="uploading" @change="upload" />
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" class="sr-only" :disabled="uploading" @change="upload" >
           </label>
         </div>
       </AdminCard>
@@ -181,7 +181,7 @@ async function save() {
           </select>
         </div>
         <label class="flex items-center gap-3 text-sm">
-          <input v-model="form.isFeatured" type="checkbox" class="h-4 w-4 accent-cocoa-900" />
+          <input v-model="form.isFeatured" type="checkbox" class="h-4 w-4 accent-cocoa-900" >
           Feature on the homepage
         </label>
       </AdminCard>

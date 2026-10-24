@@ -1,11 +1,11 @@
-import { createError } from 'h3'
-import type { UserRole } from '../../shared/constants'
-import type { LoginInput, RegisterInput } from '../../shared/schemas/auth'
-import { User, type IUser } from '../db/models'
-import { hashPassword, needsRehash, verifyAgainstDummy, verifyPassword } from './password'
+import { createError } from "h3"
+import type { UserRole } from "../../shared/constants"
+import type { LoginInput, RegisterInput } from "../../shared/schemas/auth"
+import { User, type IUser } from "../db/models"
+import { hashPassword, needsRehash, verifyAgainstDummy, verifyPassword } from "./password"
 
 function isDuplicateKeyError(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000
+  return typeof error === "object" && error !== null && (error as { code?: number }).code === 11000
 }
 
 /** Public sign-up. Always creates a `customer`; the role is never taken from input. */
@@ -16,25 +16,25 @@ export async function registerCustomer(input: RegisterInput): Promise<IUser> {
       name: input.name,
       email: input.email,
       passwordHash,
-      role: 'customer',
+      role: "customer",
     })
     return user.toObject()
   } catch (error) {
     if (isDuplicateKeyError(error)) {
-      throw createError({ statusCode: 409, statusMessage: 'An account with this email already exists' })
+      throw createError({ statusCode: 409, statusMessage: "An account with this email already exists" })
     }
     throw error
   }
 }
 
-const INVALID_CREDENTIALS = 'Invalid email or password'
+const INVALID_CREDENTIALS = "Invalid email or password"
 
 /**
  * Verifies credentials. Unknown emails, wrong passwords and disabled accounts
  * all produce the same error after the same amount of work.
  */
 export async function authenticate(input: LoginInput): Promise<IUser> {
-  const user = await User.findOne({ email: input.email }).select('+passwordHash')
+  const user = await User.findOne({ email: input.email }).select("+passwordHash")
 
   if (!user) {
     await verifyAgainstDummy(input.password)
@@ -63,11 +63,11 @@ export async function authenticate(input: LoginInput): Promise<IUser> {
  */
 export async function upsertAdmin(input: { email: string; name: string; password: string }) {
   const passwordHash = await hashPassword(input.password)
-  const role: UserRole = 'admin'
+  const role: UserRole = "admin"
   const user = await User.findOneAndUpdate(
     { email: input.email },
     { $set: { role, passwordHash, isActive: true }, $setOnInsert: { name: input.name } },
-    { upsert: true, returnDocument: 'after', runValidators: true },
+    { upsert: true, returnDocument: "after", runValidators: true },
   )
   return user
 }

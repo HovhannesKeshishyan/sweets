@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { CategoryDTO } from '#shared/types/api'
+import type { CategoryDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'Categories · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "Categories · Admin", robots: "noindex, nofollow" })
 
-const { data, error, refresh } = await useFetch<{ items: CategoryDTO[] }>('/api/admin/categories')
+const { data, error, refresh } = await useFetch<{ items: CategoryDTO[] }>("/api/admin/categories")
 
 const editing = ref<CategoryDTO | null>(null)
 const showForm = ref(false)
-const form = reactive({ name: '', slug: '', description: '', imageUrl: '', imageAlt: '', sortOrder: '0', isActive: true })
+const form = reactive({ name: "", slug: "", description: "", imageUrl: "", imageAlt: "", sortOrder: "0", isActive: true })
 const fieldErrors = ref<Record<string, string>>({})
-const message = ref<{ tone: 'error' | 'success'; text: string } | null>(null)
+const message = ref<{ tone: "error" | "success"; text: string } | null>(null)
 const saving = ref(false)
 
 function open(category: CategoryDTO | null) {
@@ -18,11 +18,11 @@ function open(category: CategoryDTO | null) {
   showForm.value = true
   fieldErrors.value = {}
   Object.assign(form, {
-    name: category?.name ?? '',
-    slug: category?.slug ?? '',
-    description: category?.description ?? '',
-    imageUrl: category?.image?.url ?? '',
-    imageAlt: category?.image?.alt ?? '',
+    name: category?.name ?? "",
+    slug: category?.slug ?? "",
+    description: category?.description ?? "",
+    imageUrl: category?.image?.url ?? "",
+    imageAlt: category?.image?.alt ?? "",
     sortOrder: String(category?.sortOrder ?? 0),
     isActive: category?.isActive ?? true,
   })
@@ -41,14 +41,14 @@ async function save() {
     isActive: form.isActive,
   }
   try {
-    if (editing.value) await $fetch(`/api/admin/categories/${editing.value.id}`, { method: 'PATCH', body })
-    else await $fetch('/api/admin/categories', { method: 'POST', body })
-    message.value = { tone: 'success', text: 'Category saved.' }
+    if (editing.value) await $fetch(`/api/admin/categories/${editing.value.id}`, { method: "PATCH", body })
+    else await $fetch("/api/admin/categories", { method: "POST", body })
+    message.value = { tone: "success", text: "Category saved." }
     showForm.value = false
     await refresh()
   } catch (e) {
     fieldErrors.value = apiFieldErrors(e)
-    message.value = { tone: 'error', text: apiErrorMessage(e) }
+    message.value = { tone: "error", text: apiErrorMessage(e) }
   } finally {
     saving.value = false
   }
@@ -56,21 +56,21 @@ async function save() {
 
 async function toggleActive(category: CategoryDTO) {
   try {
-    await $fetch(`/api/admin/categories/${category.id}`, { method: 'PATCH', body: { isActive: !category.isActive } })
+    await $fetch(`/api/admin/categories/${category.id}`, { method: "PATCH", body: { isActive: !category.isActive } })
     await refresh()
   } catch (e) {
-    message.value = { tone: 'error', text: apiErrorMessage(e) }
+    message.value = { tone: "error", text: apiErrorMessage(e) }
   }
 }
 
 async function remove(category: CategoryDTO) {
   if (!confirm(`Delete “${category.name}”? This can't be undone.`)) return
   try {
-    await $fetch(`/api/admin/categories/${category.id}`, { method: 'DELETE' })
-    message.value = { tone: 'success', text: `${category.name} deleted.` }
+    await $fetch(`/api/admin/categories/${category.id}`, { method: "DELETE" })
+    message.value = { tone: "success", text: `${category.name} deleted.` }
     await refresh()
   } catch (e) {
-    message.value = { tone: 'error', text: apiErrorMessage(e) }
+    message.value = { tone: "error", text: apiErrorMessage(e) }
   }
 }
 </script>
@@ -96,7 +96,7 @@ async function remove(category: CategoryDTO) {
         <FormField v-model="form.imageAlt" label="Image description" />
         <FormField v-model="form.sortOrder" label="Sort order" type="number" :error="fieldErrors.sortOrder" />
         <label class="flex items-center gap-3 self-end pb-3 text-sm">
-          <input v-model="form.isActive" type="checkbox" class="h-4 w-4 accent-cocoa-900" /> Visible in the shop
+          <input v-model="form.isActive" type="checkbox" class="h-4 w-4 accent-cocoa-900" > Visible in the shop
         </label>
         <div class="flex gap-3 sm:col-span-2">
           <button type="submit" class="btn-primary" :disabled="saving">{{ saving ? 'Saving…' : 'Save' }}</button>

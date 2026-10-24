@@ -1,6 +1,6 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
-useSeoMeta({ title: 'Your account', robots: 'noindex' })
+definePageMeta({ middleware: "auth" })
+useSeoMeta({ title: "Your account", robots: "noindex" })
 
 interface Profile {
   id: string
@@ -11,22 +11,22 @@ interface Profile {
 }
 
 const auth = useAuth()
-const { data, refresh } = await useFetch<{ profile: Profile }>('/api/account/profile', {
-  headers: useRequestHeaders(['cookie']),
+const { data, refresh } = await useFetch<{ profile: Profile }>("/api/account/profile", {
+  headers: useRequestHeaders(["cookie"]),
 })
 
-const form = reactive({ name: '', phone: '' })
+const form = reactive({ name: "", phone: "" })
 watch(
   () => data.value?.profile,
   (p) => {
-    form.name = p?.name ?? ''
-    form.phone = p?.phone ?? ''
+    form.name = p?.name ?? ""
+    form.phone = p?.phone ?? ""
   },
   { immediate: true },
 )
 
 const fieldErrors = ref<Record<string, string>>({})
-const status = ref<{ type: 'ok' | 'error'; text: string } | null>(null)
+const status = ref<{ type: "ok" | "error"; text: string } | null>(null)
 const saving = ref(false)
 
 async function save() {
@@ -34,15 +34,15 @@ async function save() {
   status.value = null
   fieldErrors.value = {}
   try {
-    await $fetch('/api/account/profile', {
-      method: 'PATCH',
+    await $fetch("/api/account/profile", {
+      method: "PATCH",
       body: { name: form.name, phone: form.phone.trim() ? form.phone : null },
     })
     await Promise.all([refresh(), auth.refresh()])
-    status.value = { type: 'ok', text: 'Profile saved.' }
+    status.value = { type: "ok", text: "Profile saved." }
   } catch (e) {
     fieldErrors.value = apiFieldErrors(e)
-    status.value = { type: 'error', text: apiErrorMessage(e) }
+    status.value = { type: "error", text: apiErrorMessage(e) }
   } finally {
     saving.value = false
   }
@@ -50,7 +50,7 @@ async function save() {
 
 async function signOut() {
   await auth.logout()
-  await navigateTo('/')
+  await navigateTo("/")
 }
 </script>
 

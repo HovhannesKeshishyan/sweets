@@ -1,5 +1,5 @@
-import { idParamsSchema } from '../../../../shared/schemas/common'
-import { getAdminProduct } from '../../../services/product.service'
+import { idParamsSchema } from "../../../../shared/schemas/common"
+import { getAdminProduct } from "../../../services/product.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

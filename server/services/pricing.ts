@@ -4,10 +4,10 @@
  * preview and order placement both call it, with prices read from the database,
  * never from the client.
  */
-import { MAX_QUANTITY_PER_LINE } from '../../shared/constants'
-import type { CouponType } from '../../shared/constants'
-import type { CartIssueCode, CartLineInput, ImageDTO } from '../../shared/types/api'
-import { formatMoney, percentOf } from '../../shared/utils/money'
+import { MAX_QUANTITY_PER_LINE } from "../../shared/constants"
+import type { CouponType } from "../../shared/constants"
+import type { CartIssueCode, CartLineInput, ImageDTO } from "../../shared/types/api"
+import { formatMoney, percentOf } from "../../shared/utils/money"
 
 export interface PricingProduct {
   id: string
@@ -107,15 +107,15 @@ export type CouponEvaluation =
 /** Checks a coupon against priced lines and computes the discount per line. */
 export function evaluateCoupon(
   coupon: PricingCoupon,
-  lines: Pick<PricedLine, 'product' | 'gross'>[],
+  lines: Pick<PricedLine, "product" | "gross">[],
   currency: string,
   now: Date,
 ): CouponEvaluation {
-  if (!coupon.isActive) return { ok: false, reason: 'This code is not valid.' }
-  if (coupon.startsAt && coupon.startsAt > now) return { ok: false, reason: 'This code is not active yet.' }
-  if (coupon.expiresAt && coupon.expiresAt <= now) return { ok: false, reason: 'This code has expired.' }
+  if (!coupon.isActive) return { ok: false, reason: "This code is not valid." }
+  if (coupon.startsAt && coupon.startsAt > now) return { ok: false, reason: "This code is not active yet." }
+  if (coupon.expiresAt && coupon.expiresAt <= now) return { ok: false, reason: "This code has expired." }
   if (coupon.usageLimit != null && coupon.usedCount >= coupon.usageLimit) {
-    return { ok: false, reason: 'This code has reached its usage limit.' }
+    return { ok: false, reason: "This code has reached its usage limit." }
   }
 
   const subtotal = lines.reduce((sum, l) => sum + l.gross, 0)
@@ -136,7 +136,7 @@ export function evaluateCoupon(
   if (eligibleSubtotal === 0) return { ok: false, reason: "This code doesn't apply to the items in your bag." }
 
   let discount =
-    coupon.type === 'percentage'
+    coupon.type === "percentage"
       ? percentOf(eligibleSubtotal, Math.min(coupon.value, 100))
       : Math.min(coupon.value, eligibleSubtotal)
   if (coupon.maxDiscountAmount != null) discount = Math.min(discount, coupon.maxDiscountAmount)
@@ -162,13 +162,13 @@ export function buildQuote(input: QuoteInput): Quote {
 
   for (const line of normalizeLines(input.lines)) {
     const product = input.products.get(line.productId)
-    if (!product || product.status !== 'active') {
-      issues.push({ productId: line.productId, code: 'unavailable', message: 'This item is no longer available.' })
+    if (!product || product.status !== "active") {
+      issues.push({ productId: line.productId, code: "unavailable", message: "This item is no longer available." })
       continue
     }
     const max = Math.min(product.stock, MAX_QUANTITY_PER_LINE)
     if (max <= 0) {
-      issues.push({ productId: product.id, code: 'unavailable', message: `${product.name} is sold out.` })
+      issues.push({ productId: product.id, code: "unavailable", message: `${product.name} is sold out.` })
       continue
     }
     let quantity = line.quantity
@@ -176,7 +176,7 @@ export function buildQuote(input: QuoteInput): Quote {
       quantity = max
       issues.push({
         productId: product.id,
-        code: product.stock < line.quantity ? 'insufficient_stock' : 'quantity_adjusted',
+        code: product.stock < line.quantity ? "insufficient_stock" : "quantity_adjusted",
         message:
           product.stock < line.quantity
             ? `Only ${product.stock} of ${product.name} available.`
@@ -189,7 +189,7 @@ export function buildQuote(input: QuoteInput): Quote {
 
   const subtotal = priced.reduce((sum, l) => sum + l.gross, 0)
 
-  let coupon: Quote['coupon'] = null
+  let coupon: Quote["coupon"] = null
   let couponError: string | null = null
   if (input.coupon) {
     const result = evaluateCoupon(input.coupon, priced, input.currency, now)
@@ -209,7 +209,7 @@ export function buildQuote(input: QuoteInput): Quote {
       couponError = result.reason
     }
   } else if (input.couponCode) {
-    couponError = 'This code is not valid.'
+    couponError = "This code is not valid."
   }
 
   const discountTotal = coupon?.discount ?? 0

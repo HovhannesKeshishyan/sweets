@@ -1,5 +1,5 @@
-import { categoryInputSchema } from '../../../../shared/schemas/catalog'
-import { createCategory } from '../../../services/category.service'
+import { categoryInputSchema } from "../../../../shared/schemas/catalog"
+import { createCategory } from "../../../services/category.service"
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)

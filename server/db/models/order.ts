@@ -1,4 +1,4 @@
-import { Schema, type Types } from 'mongoose'
+import { Schema, type Types } from "mongoose"
 import {
   COUPON_TYPES,
   ORDER_STATUSES,
@@ -6,8 +6,8 @@ import {
   type CouponType,
   type OrderStatus,
   type PaymentStatus,
-} from '../../../shared/constants'
-import { addressSchema, cleanJson, defineModel, moneyField, type Address } from './_shared'
+} from "../../../shared/constants"
+import { addressSchema, cleanJson, defineModel, moneyField, type Address } from "./_shared"
 
 /** Snapshot of a product at purchase time; later product edits never change it. */
 export interface OrderItem {
@@ -56,11 +56,11 @@ export interface IOrder {
   updatedAt: Date
 }
 
-const integerQty = { validator: Number.isSafeInteger, message: 'Quantity must be an integer' }
+const integerQty = { validator: Number.isSafeInteger, message: "Quantity must be an integer" }
 
 const orderItemSchema = new Schema<OrderItem>(
   {
-    product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     name: { type: String, required: true },
     slug: { type: String, required: true },
     sku: { type: String },
@@ -76,7 +76,7 @@ const orderItemSchema = new Schema<OrderItem>(
 const orderSchema = new Schema<IOrder>(
   {
     orderNumber: { type: String, required: true, unique: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
     customer: {
       email: { type: String, required: true, lowercase: true, trim: true, maxlength: 254 },
       name: { type: String, required: true, trim: true, maxlength: 100 },
@@ -85,7 +85,7 @@ const orderSchema = new Schema<IOrder>(
     shippingAddress: { type: addressSchema, required: true },
     items: {
       type: [orderItemSchema],
-      validate: { validator: (v: unknown[]) => v.length > 0, message: 'Order needs at least one item' },
+      validate: { validator: (v: unknown[]) => v.length > 0, message: "Order needs at least one item" },
     },
     currency: { type: String, required: true, uppercase: true, minlength: 3, maxlength: 3 },
     subtotal: moneyField,
@@ -103,8 +103,8 @@ const orderSchema = new Schema<IOrder>(
         { _id: false },
       ),
     },
-    status: { type: String, enum: ORDER_STATUSES, default: 'pending', required: true },
-    paymentStatus: { type: String, enum: PAYMENT_STATUSES, default: 'unpaid', required: true },
+    status: { type: String, enum: ORDER_STATUSES, default: "pending", required: true },
+    paymentStatus: { type: String, enum: PAYMENT_STATUSES, default: "unpaid", required: true },
     payment: { provider: String, reference: String },
     notes: { type: String, trim: true, maxlength: 1000 },
     statusHistory: {
@@ -112,7 +112,7 @@ const orderSchema = new Schema<IOrder>(
         {
           status: { type: String, enum: ORDER_STATUSES, required: true },
           at: { type: Date, default: Date.now },
-          by: { type: Schema.Types.ObjectId, ref: 'User' },
+          by: { type: Schema.Types.ObjectId, ref: "User" },
           note: { type: String, maxlength: 500 },
           _id: false,
         },
@@ -133,8 +133,8 @@ const orderSchema = new Schema<IOrder>(
 )
 
 orderSchema.index({ user: 1, createdAt: -1 })
-orderSchema.index({ 'customer.email': 1, createdAt: -1 })
+orderSchema.index({ "customer.email": 1, createdAt: -1 })
 orderSchema.index({ status: 1, createdAt: -1 })
 orderSchema.index({ createdAt: -1 })
 
-export const Order = defineModel<IOrder>('Order', orderSchema)
+export const Order = defineModel<IOrder>("Order", orderSchema)

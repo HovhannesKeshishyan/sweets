@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ORDER_STATUSES } from '#shared/constants'
-import type { Paginated } from '#shared/schemas/common'
-import type { OrderSummaryDTO } from '#shared/types/api'
+import { ORDER_STATUSES } from "#shared/constants"
+import type { Paginated } from "#shared/schemas/common"
+import type { OrderSummaryDTO } from "#shared/types/api"
 
-definePageMeta({ layout: 'admin', middleware: 'admin' })
-useSeoMeta({ title: 'Orders · Admin', robots: 'noindex, nofollow' })
+definePageMeta({ layout: "admin", middleware: "admin" })
+useSeoMeta({ title: "Orders · Admin", robots: "noindex, nofollow" })
 
 const route = useRoute()
 const router = useRouter()
-const str = (v: unknown) => (typeof v === 'string' && v ? v : undefined)
+const str = (v: unknown) => (typeof v === "string" && v ? v : undefined)
 const query = computed(() => ({
   q: str(route.query.q),
   status: str(route.query.status),
   page: Math.max(1, Number(route.query.page) || 1),
 }))
-const { data, error } = await useFetch<Paginated<OrderSummaryDTO>>('/api/admin/orders', { query })
+const { data, error } = await useFetch<Paginated<OrderSummaryDTO>>("/api/admin/orders", { query })
 
-const search = ref(query.value.q ?? '')
+const search = ref(query.value.q ?? "")
 function update(patch: Record<string, string | undefined>) {
   router.push({ query: { ...route.query, ...patch, page: undefined } })
 }
@@ -29,7 +29,7 @@ function update(patch: Record<string, string | undefined>) {
     <div class="mb-6 flex flex-wrap gap-3">
       <form role="search" class="flex" @submit.prevent="update({ q: search.trim() || undefined })">
         <label for="order-search" class="sr-only">Search orders</label>
-        <input id="order-search" v-model="search" type="search" placeholder="Order number, name or email" class="field w-72 rounded-r-none" />
+        <input id="order-search" v-model="search" type="search" placeholder="Order number, name or email" class="field w-72 rounded-r-none" >
         <button type="submit" class="rounded-r-xl bg-cocoa-900 px-4 text-sm text-cream-100">Search</button>
       </form>
       <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by status">

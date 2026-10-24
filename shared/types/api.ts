@@ -1,4 +1,4 @@
-import type { CouponType, OrderStatus, PaymentStatus, ProductStatus, UserRole } from '../constants'
+import type { CouponType, OrderStatus, PaymentStatus, ProductStatus, UserRole } from "../constants"
 
 /** Response shapes shared by the API and the UI. Money is always integer minor units. */
 
@@ -20,7 +20,7 @@ export interface CategoryDTO {
   productCount?: number
 }
 
-export type StockLevel = 'in_stock' | 'low_stock' | 'out_of_stock'
+export type StockLevel = "in_stock" | "low_stock" | "out_of_stock"
 
 export interface ProductSummaryDTO {
   id: string
@@ -68,7 +68,7 @@ export interface CartLineInput {
   quantity: number
 }
 
-export type CartIssueCode = 'unavailable' | 'insufficient_stock' | 'quantity_adjusted'
+export type CartIssueCode = "unavailable" | "insufficient_stock" | "quantity_adjusted"
 
 export interface QuoteLineDTO {
   productId: string

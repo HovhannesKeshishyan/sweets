@@ -1,5 +1,5 @@
-import { Schema, type Types } from 'mongoose'
-import { cleanJson, defineModel, imageSchema, type ImageRef } from './_shared'
+import { Schema, type Types } from "mongoose"
+import { cleanJson, defineModel, imageSchema, type ImageRef } from "./_shared"
 
 export interface ICategory {
   _id: Types.ObjectId
@@ -27,4 +27,4 @@ const categorySchema = new Schema<ICategory>(
 
 categorySchema.index({ isActive: 1, sortOrder: 1, name: 1 })
 
-export const Category = defineModel<ICategory>('Category', categorySchema)
+export const Category = defineModel<ICategory>("Category", categorySchema)

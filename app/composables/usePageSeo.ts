@@ -13,10 +13,10 @@ export function usePageSeo(input: {
     description: input.description,
     ogTitle: input.title,
     ogDescription: input.description,
-    ogType: 'website',
+    ogType: "website",
     ogUrl: canonical,
     ogImage: () => toValue(input.image) || undefined,
-    twitterCard: () => (toValue(input.image) ? 'summary_large_image' : 'summary'),
+    twitterCard: () => (toValue(input.image) ? "summary_large_image" : "summary"),
   })
-  useHead({ link: [{ rel: 'canonical', href: canonical }] })
+  useHead({ link: [{ rel: "canonical", href: canonical }] })
 }

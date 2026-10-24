@@ -1,11 +1,11 @@
-import { z } from 'zod'
-import { ORDER_STATUSES, type OrderStatus } from '../constants'
+import { z } from "zod"
+import { ORDER_STATUSES, type OrderStatus } from "../constants"
 
 /** Allowed fulfillment transitions. Delivered and cancelled are final. */
 export const ORDER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
-  pending: ['processing', 'cancelled'],
-  processing: ['shipped', 'cancelled'],
-  shipped: ['delivered'],
+  pending: ["processing", "cancelled"],
+  processing: ["shipped", "cancelled"],
+  shipped: ["delivered"],
   delivered: [],
   cancelled: [],
 }
@@ -23,7 +23,7 @@ export const orderNumberSchema = z
   .string()
   .trim()
   .toUpperCase()
-  .regex(/^MC-\d{6}-[A-Z0-9]{6}$/, 'Invalid order number')
+  .regex(/^MC-\d{6}-[A-Z0-9]{6}$/, "Invalid order number")
 
 export const adminOrderListQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),

@@ -1,6 +1,6 @@
-import { Schema, type Types } from 'mongoose'
-import { COUPON_TYPES, type CouponType } from '../../../shared/constants'
-import { cleanJson, defineModel } from './_shared'
+import { Schema, type Types } from "mongoose"
+import { COUPON_TYPES, type CouponType } from "../../../shared/constants"
+import { cleanJson, defineModel } from "./_shared"
 
 export interface ICoupon {
   _id: Types.ObjectId
@@ -27,7 +27,7 @@ export interface ICoupon {
   updatedAt: Date
 }
 
-const integer = { validator: Number.isSafeInteger, message: '{PATH} must be an integer' }
+const integer = { validator: Number.isSafeInteger, message: "{PATH} must be an integer" }
 
 const couponSchema = new Schema<ICoupon>(
   {
@@ -41,17 +41,17 @@ const couponSchema = new Schema<ICoupon>(
     expiresAt: { type: Date },
     usageLimit: { type: Number, min: 1, validate: integer },
     usedCount: { type: Number, default: 0, min: 0, validate: integer },
-    products: { type: [{ type: Schema.Types.ObjectId, ref: 'Product' }], default: [] },
-    categories: { type: [{ type: Schema.Types.ObjectId, ref: 'Category' }], default: [] },
+    products: { type: [{ type: Schema.Types.ObjectId, ref: "Product" }], default: [] },
+    categories: { type: [{ type: Schema.Types.ObjectId, ref: "Category" }], default: [] },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true, toJSON: { transform: cleanJson } },
 )
 
-couponSchema.path('value').validate(function (this: ICoupon, value: number) {
-  return this.type !== 'percentage' || value <= 100
-}, 'Percentage coupons cannot exceed 100')
+couponSchema.path("value").validate(function (this: ICoupon, value: number) {
+  return this.type !== "percentage" || value <= 100
+}, "Percentage coupons cannot exceed 100")
 
 couponSchema.index({ isActive: 1, expiresAt: 1 })
 
-export const Coupon = defineModel<ICoupon>('Coupon', couponSchema)
+export const Coupon = defineModel<ICoupon>("Coupon", couponSchema)

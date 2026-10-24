@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProductSummaryDTO } from '#shared/types/api'
+import type { ProductSummaryDTO } from "#shared/types/api"
 
 const props = defineProps<{ product: ProductSummaryDTO; priority?: boolean }>()
 const cart = useCart()

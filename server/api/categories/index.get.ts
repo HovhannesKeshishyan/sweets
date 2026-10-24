@@ -1,4 +1,4 @@
-import { listPublicCategories } from '../../services/category.service'
+import { listPublicCategories } from "../../services/category.service"
 
 export default defineEventHandler(async () => {
   await useDatabase()

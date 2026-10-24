@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { Paginated } from '#shared/schemas/common'
-import type { OrderSummaryDTO } from '#shared/types/api'
+import type { Paginated } from "#shared/schemas/common"
+import type { OrderSummaryDTO } from "#shared/types/api"
 
-definePageMeta({ middleware: 'auth' })
-useSeoMeta({ title: 'Your orders', robots: 'noindex' })
+definePageMeta({ middleware: "auth" })
+useSeoMeta({ title: "Your orders", robots: "noindex" })
 
 const route = useRoute()
 const page = computed(() => Math.max(1, Number(route.query.page) || 1))
-const { data, error } = await useFetch<Paginated<OrderSummaryDTO>>('/api/account/orders', {
+const { data, error } = await useFetch<Paginated<OrderSummaryDTO>>("/api/account/orders", {
   query: computed(() => ({ page: page.value, limit: 10 })),
-  headers: useRequestHeaders(['cookie']),
+  headers: useRequestHeaders(["cookie"]),
 })
 </script>
 

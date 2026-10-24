@@ -1,10 +1,10 @@
-import { Schema, type Types } from 'mongoose'
-import { addressSchema, defineModel, type Address } from './_shared'
+import { Schema, type Types } from "mongoose"
+import { addressSchema, defineModel, type Address } from "./_shared"
 
 /** Singleton document (key = "store") holding store-wide configuration. */
 export interface IStoreSettings {
   _id: Types.ObjectId
-  key: 'store'
+  key: "store"
   storeName: string
   contactEmail?: string
   contactPhone?: string
@@ -23,11 +23,11 @@ export interface IStoreSettings {
   updatedAt: Date
 }
 
-const integer = { validator: Number.isSafeInteger, message: '{PATH} must be an integer' }
+const integer = { validator: Number.isSafeInteger, message: "{PATH} must be an integer" }
 
 const storeSettingsSchema = new Schema<IStoreSettings>(
   {
-    key: { type: String, enum: ['store'], default: 'store', unique: true, immutable: true },
+    key: { type: String, enum: ["store"], default: "store", unique: true, immutable: true },
     storeName: { type: String, required: true, trim: true, maxlength: 80 },
     contactEmail: { type: String, lowercase: true, trim: true, maxlength: 254 },
     contactPhone: { type: String, trim: true, maxlength: 30 },
@@ -42,4 +42,4 @@ const storeSettingsSchema = new Schema<IStoreSettings>(
   { timestamps: true },
 )
 
-export const StoreSettings = defineModel<IStoreSettings>('StoreSettings', storeSettingsSchema)
+export const StoreSettings = defineModel<IStoreSettings>("StoreSettings", storeSettingsSchema)

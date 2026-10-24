@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ImageDTO } from '#shared/types/api'
+import type { ImageDTO } from "#shared/types/api"
 
 const props = withDefaults(
   defineProps<{
@@ -10,11 +10,11 @@ const props = withDefaults(
     width?: number
     priority?: boolean
   }>(),
-  { sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw', width: 640, priority: false },
+  { sizes: "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw", width: 640, priority: false },
 )
 
 const failed = ref(false)
-const src = computed(() => (props.image ? imageUrl(props.image.url, props.width) : ''))
+const src = computed(() => (props.image ? imageUrl(props.image.url, props.width) : ""))
 const srcset = computed(() => (props.image ? imageSrcset(props.image.url) : undefined))
 const initial = computed(() => props.label.trim().charAt(0).toUpperCase())
 </script>
@@ -34,7 +34,7 @@ const initial = computed(() => props.label.trim().charAt(0).toUpperCase())
       decoding="async"
       class="h-full w-full object-cover"
       @error="failed = true"
-    />
+    >
     <!-- Elegant placeholder when an image is missing or fails to load. -->
     <div
       v-else
