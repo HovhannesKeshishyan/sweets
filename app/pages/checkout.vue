@@ -113,23 +113,16 @@ async function placeOrder() {
               <NuxtLink to="/login?redirect=/checkout" class="font-semibold text-gold-600 hover:underline">Sign in</NuxtLink>
               to save this order to your account.
             </p>
-            <FormField v-model="form.email" label="Email" type="email" autocomplete="email" required :error="fieldErrors.email" />
+            <FormField v-model="form.name" label="Full name" autocomplete="name" required :error="fieldErrors.name" />
             <div class="grid gap-5 sm:grid-cols-2">
-              <FormField v-model="form.name" label="Full name" autocomplete="name" required :error="fieldErrors.name" />
+              <FormField v-model="form.email" label="Email" type="email" autocomplete="email" required :error="fieldErrors.email" />
               <FormField v-model="form.phone" label="Phone" type="tel" autocomplete="tel" :error="fieldErrors.phone" hint="For delivery questions only" />
             </div>
           </fieldset>
 
           <fieldset class="space-y-5">
             <legend class="font-display text-2xl">Delivery address</legend>
-            <FormField v-model="form.line1" label="Address" autocomplete="address-line1" required :error="fieldErrors.line1" />
-            <FormField v-model="form.line2" label="Apartment, suite, etc." autocomplete="address-line2" :error="fieldErrors.line2" />
             <div class="grid gap-5 sm:grid-cols-2">
-              <FormField v-model="form.city" label="City" autocomplete="address-level2" required :error="fieldErrors.city" />
-              <FormField v-model="form.region" label="State / region" autocomplete="address-level1" :error="fieldErrors.region" />
-            </div>
-            <div class="grid gap-5 sm:grid-cols-2">
-              <FormField v-model="form.postalCode" label="Postal code" autocomplete="postal-code" required :error="fieldErrors.postalCode" />
               <div class="flex flex-col gap-1.5">
                 <label for="country" class="text-sm font-medium text-cocoa-800">
                   Country <span aria-hidden="true" class="text-gold-600">*</span>
@@ -149,6 +142,13 @@ async function placeOrder() {
                 </select>
                 <p v-if="fieldErrors.country" id="country-error" class="text-xs text-red-800">{{ fieldErrors.country }}</p>
               </div>
+              <FormField v-model="form.region" label="State / region" autocomplete="address-level1" :error="fieldErrors.region" />
+            </div>
+            <FormField v-model="form.city" label="City" autocomplete="address-level2" required :error="fieldErrors.city" />
+            <FormField v-model="form.line1" label="Address" autocomplete="address-line1" required :error="fieldErrors.line1" />
+            <div class="grid gap-5 sm:grid-cols-2">
+              <FormField v-model="form.line2" label="Apartment, suite, etc." autocomplete="address-line2" :error="fieldErrors.line2" />
+              <FormField v-model="form.postalCode" label="Postal code" autocomplete="postal-code" required :error="fieldErrors.postalCode" />
             </div>
           </fieldset>
 
