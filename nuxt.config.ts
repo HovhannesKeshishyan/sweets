@@ -30,6 +30,12 @@ export default defineNuxtConfig({
       apiSecret: "",
       folder: "velourasweets/products",
     },
+
+    resend: {
+      apiKey: "",
+      from: "",
+      to: "",
+    },
     public: {
       siteUrl: "http://localhost:3000",
       siteName: "Veloura Sweets",
