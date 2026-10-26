@@ -34,23 +34,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Starting MongoDB..."
-
           docker run -d \
             --name mongo \
             -p 27017:27017 \
-            mongo:8 \
+            mongo:8.0 \
             --replSet rs0 \
             --bind_ip_all
-
-          echo "Waiting for MongoDB to become ready..."
 
           ready=false
 
           for i in $(seq 1 30); do
             if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
               echo "MongoDB container stopped unexpectedly."
-              docker inspect mongo
               docker logs mongo
               exit 1
             fi
@@ -71,15 +66,13 @@ jobs:
             exit 1
           fi
 
-          echo "Initializing MongoDB replica set..."
+          echo "Initializing replica set..."
 
           docker exec mongo mongosh --quiet --eval \
             "rs.initiate({
               _id: 'rs0',
               members: [{ _id: 0, host: 'localhost:27017' }]
             })"
-
-          echo "Waiting for replica set primary..."
 
           primary=false
 
@@ -89,12 +82,6 @@ jobs:
               | grep -q '^true$'; then
               primary=true
               break
-            fi
-
-            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
-              echo "MongoDB stopped during replica set initialization."
-              docker logs mongo
-              exit 1
             fi
 
             sleep 2
@@ -121,7 +108,7 @@ jobs:
         run: npm test
 
   e2e:
-    # Disabled until the e2e failures in CI are fixed.
+    # Disabled until the E2E failures in CI are fixed.
     if: false
     runs-on: ubuntu-latest
     needs: ci
@@ -148,23 +135,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Starting MongoDB..."
-
           docker run -d \
             --name mongo \
             -p 27017:27017 \
-            mongo:8 \
+            mongo:8.0 \
             --replSet rs0 \
             --bind_ip_all
-
-          echo "Waiting for MongoDB to become ready..."
 
           ready=false
 
           for i in $(seq 1 30); do
             if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
               echo "MongoDB container stopped unexpectedly."
-              docker inspect mongo
               docker logs mongo
               exit 1
             fi
@@ -185,15 +167,11 @@ jobs:
             exit 1
           fi
 
-          echo "Initializing MongoDB replica set..."
-
           docker exec mongo mongosh --quiet --eval \
             "rs.initiate({
               _id: 'rs0',
               members: [{ _id: 0, host: 'localhost:27017' }]
             })"
-
-          echo "Waiting for replica set primary..."
 
           primary=false
 
@@ -203,12 +181,6 @@ jobs:
               | grep -q '^true$'; then
               primary=true
               break
-            fi
-
-            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
-              echo "MongoDB stopped during replica set initialization."
-              docker logs mongo
-              exit 1
             fi
 
             sleep 2
