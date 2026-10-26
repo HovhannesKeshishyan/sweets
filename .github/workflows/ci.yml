@@ -14,12 +14,12 @@ concurrency:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
-      # Use a real replica set so DB tests can't silently skip if
-      # mongodb-memory-server fails to download its binary.
       MONGODB_TEST_URI: mongodb://localhost:27017/sweets_test?replicaSet=rs0
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,15 +31,79 @@ jobs:
           cache: npm
 
       - name: Start MongoDB replica set
+        shell: bash
         run: |
-          docker run -d --name mongo -p 27017:27017 mongo:8 --replSet rs0 --bind_ip_all
+          set -euo pipefail
+
+          echo "Kernel: $(uname -r)"
+
+          docker run -d \
+            --name mongo \
+            -p 27017:27017 \
+            mongo:8.0 \
+            --replSet rs0 \
+            --bind_ip_all
+
+          ready=false
+
           for i in $(seq 1 30); do
-            docker exec mongo mongosh --quiet --eval "db.adminCommand('ping')" && break
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB container stopped unexpectedly."
+              docker logs mongo
+              exit 1
+            fi
+
+            if docker exec mongo mongosh --quiet \
+              --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null \
+              | grep -q '^1$'; then
+              ready=true
+              break
+            fi
+
             sleep 2
           done
-          docker exec mongo mongosh --quiet --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] })"
 
-      # Also runs `nuxt prepare` (postinstall), which generates .nuxt/tsconfig.*.json.
+          if [ "$ready" != "true" ]; then
+            echo "MongoDB did not become ready within 60 seconds."
+            docker logs mongo
+            exit 1
+          fi
+
+          echo "Initializing replica set..."
+
+          docker exec mongo mongosh --quiet --eval \
+            "rs.initiate({
+              _id: 'rs0',
+              members: [{ _id: 0, host: 'localhost:27017' }]
+            })"
+
+          primary=false
+
+          for i in $(seq 1 30); do
+            if docker exec mongo mongosh --quiet \
+              --eval "db.hello().isWritablePrimary" 2>/dev/null \
+              | grep -q '^true$'; then
+              primary=true
+              break
+            fi
+
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB stopped during replica set initialization."
+              docker logs mongo
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          if [ "$primary" != "true" ]; then
+            echo "Replica set failed to elect a primary."
+            docker logs mongo
+            exit 1
+          fi
+
+          echo "MongoDB replica set is ready."
+
       - name: Install dependencies
         run: npm ci
 
@@ -53,9 +117,10 @@ jobs:
         run: npm test
 
   e2e:
-    # Disabled until the e2e failures in CI are fixed. Remove this line to re-enable.
+    # Disabled until the E2E failures in CI are fixed.
     if: false
-    runs-on: ubuntu-latest
+    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
+    runs-on: ubuntu-24.04
     needs: ci
     timeout-minutes: 20
     env:
@@ -64,6 +129,7 @@ jobs:
       E2E_WITH_DB: "1"
       E2E_ADMIN_EMAIL: admin@example.com
       E2E_ADMIN_PASSWORD: admin-password-123
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,13 +141,76 @@ jobs:
           cache: npm
 
       - name: Start MongoDB replica set
+        shell: bash
         run: |
-          docker run -d --name mongo -p 27017:27017 mongo:8 --replSet rs0 --bind_ip_all
+          set -euo pipefail
+
+          echo "Kernel: $(uname -r)"
+
+          docker run -d \
+            --name mongo \
+            -p 27017:27017 \
+            mongo:8.0 \
+            --replSet rs0 \
+            --bind_ip_all
+
+          ready=false
+
           for i in $(seq 1 30); do
-            docker exec mongo mongosh --quiet --eval "db.adminCommand('ping')" && break
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB container stopped unexpectedly."
+              docker logs mongo
+              exit 1
+            fi
+
+            if docker exec mongo mongosh --quiet \
+              --eval "db.adminCommand({ ping: 1 }).ok" 2>/dev/null \
+              | grep -q '^1$'; then
+              ready=true
+              break
+            fi
+
             sleep 2
           done
-          docker exec mongo mongosh --quiet --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] })"
+
+          if [ "$ready" != "true" ]; then
+            echo "MongoDB did not become ready within 60 seconds."
+            docker logs mongo
+            exit 1
+          fi
+
+          docker exec mongo mongosh --quiet --eval \
+            "rs.initiate({
+              _id: 'rs0',
+              members: [{ _id: 0, host: 'localhost:27017' }]
+            })"
+
+          primary=false
+
+          for i in $(seq 1 30); do
+            if docker exec mongo mongosh --quiet \
+              --eval "db.hello().isWritablePrimary" 2>/dev/null \
+              | grep -q '^true$'; then
+              primary=true
+              break
+            fi
+
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB stopped during replica set initialization."
+              docker logs mongo
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          if [ "$primary" != "true" ]; then
+            echo "Replica set failed to elect a primary."
+            docker logs mongo
+            exit 1
+          fi
+
+          echo "MongoDB replica set is ready."
 
       - name: Generate session secret
         run: echo "NUXT_SESSION_SECRET=$(openssl rand -base64 48 | tr -d '\n')" >> "$GITHUB_ENV"
