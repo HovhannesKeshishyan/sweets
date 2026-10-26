@@ -25,7 +25,7 @@ onBeforeUnmount(() => clearTimeout(timer));
         :image="product.image"
         :label="product.name"
         :priority="priority"
-        class="aspect-[4/5] transition duration-700 ease-out group-hover:scale-[1.03]"
+        class="aspect-4/5 transition duration-700 ease-out group-hover:scale-[1.03]"
       />
     </NuxtLink>
     <div class="mt-4 flex flex-1 flex-col gap-1">
