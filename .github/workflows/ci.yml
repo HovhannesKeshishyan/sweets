@@ -14,7 +14,8 @@ concurrency:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       MONGODB_TEST_URI: mongodb://localhost:27017/sweets_test?replicaSet=rs0
@@ -33,6 +34,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          echo "Kernel: $(uname -r)"
 
           docker run -d \
             --name mongo \
@@ -84,6 +87,12 @@ jobs:
               break
             fi
 
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB stopped during replica set initialization."
+              docker logs mongo
+              exit 1
+            fi
+
             sleep 2
           done
 
@@ -110,7 +119,8 @@ jobs:
   e2e:
     # Disabled until the E2E failures in CI are fixed.
     if: false
-    runs-on: ubuntu-latest
+    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
+    runs-on: ubuntu-24.04
     needs: ci
     timeout-minutes: 20
     env:
@@ -134,6 +144,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          echo "Kernel: $(uname -r)"
 
           docker run -d \
             --name mongo \
@@ -181,6 +193,12 @@ jobs:
               | grep -q '^true$'; then
               primary=true
               break
+            fi
+
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo)" != "true" ]; then
+              echo "MongoDB stopped during replica set initialization."
+              docker logs mongo
+              exit 1
             fi
 
             sleep 2
