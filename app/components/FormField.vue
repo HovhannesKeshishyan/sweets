@@ -1,21 +1,30 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    label: string
-    type?: string
-    autocomplete?: string
-    required?: boolean
-    error?: string
-    hint?: string
+    label: string;
+    type?: string;
+    autocomplete?: string;
+    required?: boolean;
+    error?: string;
+    hint?: string;
   }>(),
-  { type: "text", autocomplete: undefined, required: false, error: undefined, hint: undefined },
-)
+  {
+    type: "text",
+    autocomplete: undefined,
+    required: false,
+    error: undefined,
+    hint: undefined,
+  },
+);
 
-const model = defineModel<string>({ default: "" })
-const id = useId()
+const model = defineModel<string>({ default: "" });
+const id = useId();
 const describedBy = computed(
-  () => [props.hint && `${id}-hint`, props.error && `${id}-error`].filter(Boolean).join(" ") || undefined,
-)
+  () =>
+    [props.hint && `${id}-hint`, props.error && `${id}-error`]
+      .filter(Boolean)
+      .join(" ") || undefined,
+);
 </script>
 
 <template>
@@ -34,8 +43,12 @@ const describedBy = computed(
       :aria-describedby="describedBy"
       class="rounded-xl border bg-white/70 px-4 py-3 text-cocoa-900 transition placeholder:text-cocoa-500/60 focus:border-gold-500 focus:outline-none"
       :class="error ? 'border-red-700/60' : 'border-cocoa-900/15'"
-    >
-    <p v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-cocoa-500">{{ hint }}</p>
-    <p v-if="error" :id="`${id}-error`" class="text-xs text-red-800">{{ error }}</p>
+    />
+    <p v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-cocoa-500">
+      {{ hint }}
+    </p>
+    <p v-if="error" :id="`${id}-error`" class="text-xs text-red-800">
+      {{ error }}
+    </p>
   </div>
 </template>

@@ -1,7 +1,7 @@
-import { defineConfig, devices } from "@playwright/test"
+import { defineConfig, devices } from "@playwright/test";
 
-const PORT = Number(process.env.E2E_PORT ?? 3100)
-const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`
+const PORT = Number(process.env.E2E_PORT ?? 3100);
+const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -13,7 +13,9 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
     // Optional: point at a locally installed Chromium instead of `npx playwright install`.
-    launchOptions: { executablePath: process.env.E2E_CHROMIUM_PATH || undefined },
+    launchOptions: {
+      executablePath: process.env.E2E_CHROMIUM_PATH || undefined,
+    },
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
@@ -29,4 +31,4 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,
       },
-})
+});

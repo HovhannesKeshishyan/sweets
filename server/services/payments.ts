@@ -10,21 +10,24 @@
  *     `paymentStatus: "paid"` and `payment.reference` for the matching order.
  *     The webhook is the only place an order may be marked paid.
  */
-import type { OrderDTO } from "../../shared/types/api"
+import type { OrderDTO } from "../../shared/types/api";
 
 export interface PaymentSession {
   /** Where to send the customer to pay (e.g. a Stripe Checkout URL). */
-  redirectUrl: string
+  redirectUrl: string;
   /** Provider reference stored on the order (e.g. Checkout Session id). */
-  reference: string
+  reference: string;
 }
 
 export interface PaymentProvider {
-  readonly name: string
-  createPayment(order: OrderDTO, urls: { successUrl: string; cancelUrl: string }): Promise<PaymentSession>
+  readonly name: string;
+  createPayment(
+    order: OrderDTO,
+    urls: { successUrl: string; cancelUrl: string },
+  ): Promise<PaymentSession>;
 }
 
 /** Returns the configured provider, or null while payments are not enabled. */
 export function getPaymentProvider(): PaymentProvider | null {
-  return null
+  return null;
 }

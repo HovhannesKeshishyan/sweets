@@ -1,5 +1,12 @@
-import { z } from "zod"
-import { addressSchema, countryCodeSchema, currencySchema, emailSchema, minorAmountSchema, phoneSchema } from "./fields"
+import { z } from "zod";
+import {
+  addressSchema,
+  countryCodeSchema,
+  currencySchema,
+  emailSchema,
+  minorAmountSchema,
+  phoneSchema,
+} from "./fields";
 
 export const storeSettingsUpdateSchema = z
   .object({
@@ -14,6 +21,6 @@ export const storeSettingsUpdateSchema = z
       allowedCountries: z.array(countryCodeSchema).max(250),
     }),
   })
-  .partial()
+  .partial();
 
-export type StoreSettingsUpdate = z.infer<typeof storeSettingsUpdateSchema>
+export type StoreSettingsUpdate = z.infer<typeof storeSettingsUpdateSchema>;

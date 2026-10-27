@@ -1,4 +1,4 @@
-import { isDatabaseConnected } from "../db/connection"
+import { isDatabaseConnected } from "../db/connection";
 
 /**
  * Liveness/readiness probe. Reports database reachability without leaking
@@ -6,14 +6,14 @@ import { isDatabaseConnected } from "../db/connection"
  */
 export default defineEventHandler(async (event) => {
   try {
-    await useDatabase()
+    await useDatabase();
   } catch {
     // useDatabase already logged the cause.
   }
 
-  const database = isDatabaseConnected() ? "up" : "down"
-  if (database === "down") setResponseStatus(event, 503)
-  setHeader(event, "Cache-Control", "no-store")
+  const database = isDatabaseConnected() ? "up" : "down";
+  if (database === "down") setResponseStatus(event, 503);
+  setHeader(event, "Cache-Control", "no-store");
 
-  return { status: database === "up" ? "ok" : "degraded", database }
-})
+  return { status: database === "up" ? "ok" : "degraded", database };
+});
