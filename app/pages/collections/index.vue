@@ -32,7 +32,7 @@ const { data, error } = await useFetch<{ items: CategoryDTO[] }>(
       <li v-for="category in data?.items" :key="category.id">
         <NuxtLink
           :to="`/products?category=${category.slug}`"
-          class="group block overflow-hidden rounded-3xl bg-cream-100 transition hover:-translate-y-1 hover:shadow-xl hover:shadow-cocoa-900/5"
+          class="group block h-full overflow-hidden rounded-3xl bg-cream-100 transition hover:-translate-y-1 hover:shadow-xl hover:shadow-cocoa-900/5"
         >
           <ProductImage
             :image="category.image"
