@@ -161,7 +161,7 @@ const lines = computed(() => cart.quote.value?.lines ?? []);
                   cart.quote.value?.couponError ? 'true' : undefined
                 "
                 aria-describedby="coupon-msg"
-              />
+              >
               <button
                 type="submit"
                 class="rounded-r-full bg-cocoa-900 px-5 text-sm font-semibold text-cream-100"

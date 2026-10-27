@@ -42,7 +42,7 @@ const initial = computed(() => props.label.trim().charAt(0).toUpperCase());
       decoding="async"
       class="h-full w-full object-cover"
       @error="failed = true"
-    />
+    >
     <!-- Elegant placeholder when an image is missing or fails to load. -->
     <div
       v-else

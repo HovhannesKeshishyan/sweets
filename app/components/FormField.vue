@@ -43,7 +43,7 @@ const describedBy = computed(
       :aria-describedby="describedBy"
       class="rounded-xl border bg-white/70 px-4 py-3 text-cocoa-900 transition placeholder:text-cocoa-500/60 focus:border-gold-500 focus:outline-none"
       :class="error ? 'border-red-700/60' : 'border-cocoa-900/15'"
-    />
+    >
     <p v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-cocoa-500">
       {{ hint }}
     </p>

@@ -70,16 +70,16 @@ const money = (minor: number) => formatMoney(minor, props.order.currency);
       <div>
         <h2 class="font-display text-2xl">Delivery</h2>
         <address class="mt-3 leading-relaxed not-italic text-cocoa-800">
-          {{ order.customer.name }}<br />
-          {{ order.shippingAddress.line1 }}<br />
+          {{ order.customer.name }}<br >
+          {{ order.shippingAddress.line1 }}<br >
           <template v-if="order.shippingAddress.line2"
             >{{ order.shippingAddress.line2 }}<br
-          /></template>
+          ></template>
           {{ order.shippingAddress.city
           }}<template v-if="order.shippingAddress.region"
             >, {{ order.shippingAddress.region }}</template
           >
-          {{ order.shippingAddress.postalCode }}<br />
+          {{ order.shippingAddress.postalCode }}<br >
           {{ country }}
         </address>
       </div>

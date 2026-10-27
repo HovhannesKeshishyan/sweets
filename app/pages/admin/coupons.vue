@@ -235,7 +235,7 @@ function state(c: CouponDTO) {
             v-model="form.startsAt"
             type="datetime-local"
             class="field"
-          />
+          >
         </div>
         <div class="flex flex-col gap-1.5">
           <label for="cp-end" class="field-label">Expires</label>
@@ -245,7 +245,7 @@ function state(c: CouponDTO) {
             type="datetime-local"
             class="field"
             :aria-invalid="fieldErrors.expiresAt ? 'true' : undefined"
-          />
+          >
           <p v-if="fieldErrors.expiresAt" class="text-xs text-red-800">
             {{ fieldErrors.expiresAt }}
           </p>
@@ -262,7 +262,7 @@ function state(c: CouponDTO) {
             v-model="form.isActive"
             type="checkbox"
             class="h-4 w-4 accent-cocoa-900"
-          />
+          >
           Enabled
         </label>
 
@@ -282,7 +282,7 @@ function state(c: CouponDTO) {
                 type="checkbox"
                 :value="c.id"
                 class="accent-cocoa-900"
-              />
+              >
               {{ c.name }}
             </label>
           </div>

@@ -73,7 +73,7 @@ const describedBy = computed(
       class="rounded-xl border bg-white px-4 py-2.5 focus:border-gold-500 focus:outline-none"
       :class="error ? 'border-red-700/60' : 'border-cocoa-900/15'"
       @input="onInput(($event.target as HTMLInputElement).value)"
-    />
+    >
     <p v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-cocoa-500">
       {{ hint }}
     </p>

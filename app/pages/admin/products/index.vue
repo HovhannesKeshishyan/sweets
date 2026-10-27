@@ -72,7 +72,7 @@ async function archive(product: AdminProductDTO) {
           type="search"
           placeholder="Name, SKU or tag"
           class="field rounded-r-none"
-        />
+        >
         <button
           type="submit"
           class="rounded-r-xl bg-cocoa-900 px-4 text-sm text-cream-100"

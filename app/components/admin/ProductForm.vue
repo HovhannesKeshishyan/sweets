@@ -240,7 +240,7 @@ async function save() {
                 class="field"
                 placeholder="Alt text"
                 maxlength="200"
-              />
+              >
               <p class="truncate text-xs text-cocoa-500">{{ img.url }}</p>
             </div>
             <div class="flex flex-col gap-1 text-xs">
@@ -290,7 +290,7 @@ async function save() {
             placeholder="https://…"
             class="field flex-1"
             @keydown.enter.prevent="addImageUrl"
-          />
+          >
           <button type="button" class="btn-outline" @click="addImageUrl">
             Add URL
           </button>
@@ -306,7 +306,7 @@ async function save() {
               class="sr-only"
               :disabled="uploading"
               @change="upload"
-            />
+            >
           </label>
         </div>
       </AdminCard>
@@ -327,7 +327,7 @@ async function save() {
             v-model="form.isFeatured"
             type="checkbox"
             class="h-4 w-4 accent-cocoa-900"
-          />
+          >
           Feature on the homepage
         </label>
       </AdminCard>

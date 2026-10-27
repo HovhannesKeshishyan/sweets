@@ -45,7 +45,7 @@ function update(patch: Record<string, string | undefined>) {
           type="search"
           placeholder="Order number, name or email"
           class="field w-72 rounded-r-none"
-        />
+        >
         <button
           type="submit"
           class="rounded-r-xl bg-cocoa-900 px-4 text-sm text-cream-100"

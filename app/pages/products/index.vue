@@ -92,7 +92,7 @@ function update(patch: Record<string, string | undefined>) {
           type="search"
           placeholder="Search truffles, pralines…"
           class="w-full rounded-l-full border border-r-0 border-cocoa-900/15 bg-white/70 px-5 py-2.5 text-sm focus:border-gold-500 focus:outline-none"
-        />
+        >
         <button
           type="submit"
           class="rounded-r-full bg-cocoa-900 px-5 text-sm font-semibold text-cream-100"

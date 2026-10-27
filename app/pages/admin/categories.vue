@@ -153,7 +153,7 @@ async function remove(category: CategoryDTO) {
             v-model="form.isActive"
             type="checkbox"
             class="h-4 w-4 accent-cocoa-900"
-          />
+          >
           Visible in the shop
         </label>
         <div class="flex gap-3 sm:col-span-2">
