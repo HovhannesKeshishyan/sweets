@@ -37,7 +37,7 @@ const { data, error } = await useFetch<{ items: CategoryDTO[] }>(
           <ProductImage
             :image="category.image"
             :label="category.name"
-            class="aspect-[4/3]"
+            class="aspect-4/3"
           />
           <div class="p-7">
             <h2 class="text-3xl group-hover:text-gold-600">
