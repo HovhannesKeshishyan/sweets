@@ -1,17 +1,22 @@
-import type { StoreSettingsUpdate } from "../../shared/schemas/settings"
-import type { PublicStoreDTO } from "../../shared/types/api"
-import { StoreSettings, type IStoreSettings } from "../db/models"
+import type { StoreSettingsUpdate } from "../../shared/schemas/settings";
+import type { PublicStoreDTO } from "../../shared/types/api";
+import { StoreSettings, type IStoreSettings } from "../db/models";
 
 export interface StoreDefaults {
-  storeName: string
-  currency: string
+  storeName: string;
+  currency: string;
 }
 
-export type ResolvedSettings = Omit<IStoreSettings, "_id" | "key" | "createdAt" | "updatedAt">
+export type ResolvedSettings = Omit<
+  IStoreSettings,
+  "_id" | "key" | "createdAt" | "updatedAt"
+>;
 
 /** Store settings from the DB, falling back to env defaults until an admin saves them. */
-export async function getStoreSettings(defaults: StoreDefaults): Promise<ResolvedSettings> {
-  const doc = await StoreSettings.findOne({ key: "store" }).lean()
+export async function getStoreSettings(
+  defaults: StoreDefaults,
+): Promise<ResolvedSettings> {
+  const doc = await StoreSettings.findOne({ key: "store" }).lean();
   return {
     storeName: doc?.storeName ?? defaults.storeName,
     contactEmail: doc?.contactEmail,
@@ -23,7 +28,7 @@ export async function getStoreSettings(defaults: StoreDefaults): Promise<Resolve
       freeShippingThreshold: doc?.shipping?.freeShippingThreshold ?? undefined,
       allowedCountries: doc?.shipping?.allowedCountries ?? [],
     },
-  }
+  };
 }
 
 export function toPublicStore(s: ResolvedSettings): PublicStoreDTO {
@@ -37,26 +42,32 @@ export function toPublicStore(s: ResolvedSettings): PublicStoreDTO {
       freeShippingThreshold: s.shipping.freeShippingThreshold ?? null,
       allowedCountries: s.shipping.allowedCountries,
     },
-  }
+  };
 }
 
-export async function updateStoreSettings(input: StoreSettingsUpdate, defaults: StoreDefaults) {
-  const current = await getStoreSettings(defaults)
-  const $set: Record<string, unknown> = {}
-  const $unset: Record<string, ""> = {}
+export async function updateStoreSettings(
+  input: StoreSettingsUpdate,
+  defaults: StoreDefaults,
+) {
+  const current = await getStoreSettings(defaults);
+  const $set: Record<string, unknown> = {};
+  const $unset: Record<string, ""> = {};
 
-  if (input.storeName !== undefined) $set.storeName = input.storeName
-  if (input.currency !== undefined) $set.currency = input.currency
+  if (input.storeName !== undefined) $set.storeName = input.storeName;
+  if (input.currency !== undefined) $set.currency = input.currency;
   for (const key of ["contactEmail", "contactPhone", "address"] as const) {
-    const value = input[key]
-    if (value === null) $unset[key] = ""
-    else if (value !== undefined) $set[key] = value
+    const value = input[key];
+    if (value === null) $unset[key] = "";
+    else if (value !== undefined) $set[key] = value;
   }
   if (input.shipping) {
-    $set["shipping.flatRate"] = input.shipping.flatRate
-    $set["shipping.allowedCountries"] = input.shipping.allowedCountries
-    if (input.shipping.freeShippingThreshold === null) $unset["shipping.freeShippingThreshold"] = ""
-    else $set["shipping.freeShippingThreshold"] = input.shipping.freeShippingThreshold
+    $set["shipping.flatRate"] = input.shipping.flatRate;
+    $set["shipping.allowedCountries"] = input.shipping.allowedCountries;
+    if (input.shipping.freeShippingThreshold === null)
+      $unset["shipping.freeShippingThreshold"] = "";
+    else
+      $set["shipping.freeShippingThreshold"] =
+        input.shipping.freeShippingThreshold;
   }
 
   await StoreSettings.updateOne(
@@ -72,6 +83,6 @@ export async function updateStoreSettings(input: StoreSettingsUpdate, defaults: 
       },
     },
     { upsert: true, runValidators: true },
-  )
-  return getStoreSettings(defaults)
+  );
+  return getStoreSettings(defaults);
 }

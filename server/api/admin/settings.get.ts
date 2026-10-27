@@ -1,8 +1,8 @@
-import { getStoreSettings } from "../../services/settings.service"
+import { getStoreSettings } from "../../services/settings.service";
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
-  const s = await getStoreSettings(storeDefaults())
+  await requireAdmin(event);
+  const s = await getStoreSettings(storeDefaults());
   return {
     storeName: s.storeName,
     contactEmail: s.contactEmail ?? null,
@@ -15,5 +15,5 @@ export default defineEventHandler(async (event) => {
       allowedCountries: s.shipping.allowedCountries,
     },
     uploadsEnabled: Boolean(useRuntimeConfig().cloudinary.cloudName),
-  }
-})
+  };
+});

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ tone?: "error" | "success" | "info" }>()
+defineProps<{ tone?: "error" | "success" | "info" }>();
 </script>
 
 <template>

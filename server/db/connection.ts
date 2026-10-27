@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 /**
  * Global Mongoose settings, applied once before the first connection.
@@ -9,13 +9,13 @@ import mongoose from "mongoose"
  * updates and catalog filters): every request is parsed by Zod into primitives, and
  * `parseWith` rejects any `$`-prefixed or dotted keys before parsing.
  */
-mongoose.set("strictQuery", true)
+mongoose.set("strictQuery", true);
 
-let pending: Promise<typeof mongoose> | null = null
+let pending: Promise<typeof mongoose> | null = null;
 
 export interface ConnectOptions {
   /** Build indexes automatically. Disable in production and sync indexes on deploy. */
-  autoIndex?: boolean
+  autoIndex?: boolean;
 }
 
 /**
@@ -23,12 +23,17 @@ export interface ConnectOptions {
  * Concurrent callers share the same in-flight promise; a failed attempt is
  * cleared so the next request can retry.
  */
-export function connectToDatabase(uri: string, options: ConnectOptions = {}): Promise<typeof mongoose> {
+export function connectToDatabase(
+  uri: string,
+  options: ConnectOptions = {},
+): Promise<typeof mongoose> {
   if (!uri) {
-    return Promise.reject(new Error("MongoDB URI is not configured (set NUXT_MONGODB_URI)."))
+    return Promise.reject(
+      new Error("MongoDB URI is not configured (set NUXT_MONGODB_URI)."),
+    );
   }
   if (mongoose.connection.readyState === mongoose.ConnectionStates.connected) {
-    return Promise.resolve(mongoose)
+    return Promise.resolve(mongoose);
   }
   if (!pending) {
     pending = mongoose
@@ -37,18 +42,18 @@ export function connectToDatabase(uri: string, options: ConnectOptions = {}): Pr
         autoIndex: options.autoIndex ?? true,
       })
       .catch((error: unknown) => {
-        pending = null
-        throw error
-      })
+        pending = null;
+        throw error;
+      });
   }
-  return pending
+  return pending;
 }
 
 export async function disconnectFromDatabase(): Promise<void> {
-  pending = null
-  await mongoose.disconnect()
+  pending = null;
+  await mongoose.disconnect();
 }
 
 export function isDatabaseConnected(): boolean {
-  return mongoose.connection.readyState === mongoose.ConnectionStates.connected
+  return mongoose.connection.readyState === mongoose.ConnectionStates.connected;
 }

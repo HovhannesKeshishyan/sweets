@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ProductSummaryDTO } from "#shared/types/api"
+import type { ProductSummaryDTO } from "#shared/types/api";
 
-defineProps<{ products: ProductSummaryDTO[]; columns?: 3 | 4 }>()
+defineProps<{ products: ProductSummaryDTO[]; columns?: 3 | 4 }>();
 </script>
 
 <template>

@@ -8,5 +8,5 @@ export function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 120)
-    .replace(/-+$/g, "")
+    .replace(/-+$/g, "");
 }

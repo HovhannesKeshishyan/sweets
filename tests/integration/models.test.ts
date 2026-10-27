@@ -108,7 +108,10 @@ describe.skipIf(!hasDatabase)("models", () => {
   });
 
   it("keeps store settings a singleton", async () => {
-    await StoreSettings.create({ storeName: "Veloura Sweets", currency: "usd" });
+    await StoreSettings.create({
+      storeName: "Veloura Sweets",
+      currency: "usd",
+    });
     await expect(
       StoreSettings.create({ storeName: "Other", currency: "EUR" }),
     ).rejects.toMatchObject({ code: 11000 });

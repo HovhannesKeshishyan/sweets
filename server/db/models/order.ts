@@ -1,4 +1,4 @@
-import { Schema, type Types } from "mongoose"
+import { Schema, type Types } from "mongoose";
 import {
   COUPON_TYPES,
   ORDER_STATUSES,
@@ -6,57 +6,71 @@ import {
   type CouponType,
   type OrderStatus,
   type PaymentStatus,
-} from "../../../shared/constants"
-import { addressSchema, cleanJson, defineModel, moneyField, type Address } from "./_shared"
+} from "../../../shared/constants";
+import {
+  addressSchema,
+  cleanJson,
+  defineModel,
+  moneyField,
+  type Address,
+} from "./_shared";
 
 /** Snapshot of a product at purchase time; later product edits never change it. */
 export interface OrderItem {
-  product: Types.ObjectId
-  name: string
-  slug: string
-  sku?: string
-  image?: string
-  unitPrice: number
-  quantity: number
+  product: Types.ObjectId;
+  name: string;
+  slug: string;
+  sku?: string;
+  image?: string;
+  unitPrice: number;
+  quantity: number;
   /** Discount allocated to this line, minor units. */
-  discount: number
+  discount: number;
   /** unitPrice × quantity − discount. */
-  lineTotal: number
+  lineTotal: number;
 }
 
 export interface OrderCoupon {
-  code: string
-  type: CouponType
-  value: number
-  discount: number
+  code: string;
+  type: CouponType;
+  value: number;
+  discount: number;
 }
 
 export interface IOrder {
-  _id: Types.ObjectId
-  orderNumber: string
-  user?: Types.ObjectId
-  customer: { email: string; name: string; phone?: string }
-  shippingAddress: Address
-  items: OrderItem[]
-  currency: string
-  subtotal: number
-  discountTotal: number
-  shippingTotal: number
-  total: number
-  coupon?: OrderCoupon
-  status: OrderStatus
-  paymentStatus: PaymentStatus
+  _id: Types.ObjectId;
+  orderNumber: string;
+  user?: Types.ObjectId;
+  customer: { email: string; name: string; phone?: string };
+  shippingAddress: Address;
+  items: OrderItem[];
+  currency: string;
+  subtotal: number;
+  discountTotal: number;
+  shippingTotal: number;
+  total: number;
+  coupon?: OrderCoupon;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
   /** Reserved for a future provider such as Stripe. Card data is never stored. */
-  payment?: { provider?: string; reference?: string }
-  notes?: string
-  statusHistory: { status: OrderStatus; at: Date; by?: Types.ObjectId; note?: string }[]
+  payment?: { provider?: string; reference?: string };
+  notes?: string;
+  statusHistory: {
+    status: OrderStatus;
+    at: Date;
+    by?: Types.ObjectId;
+    note?: string;
+  }[];
   /** HMAC of the token in the guest confirmation link. */
-  accessTokenHash: string
-  createdAt: Date
-  updatedAt: Date
+  accessTokenHash: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const integerQty = { validator: Number.isSafeInteger, message: "Quantity must be an integer" }
+const integerQty = {
+  validator: Number.isSafeInteger,
+  message: "Quantity must be an integer",
+};
 
 const orderItemSchema = new Schema<OrderItem>(
   {
@@ -71,23 +85,38 @@ const orderItemSchema = new Schema<OrderItem>(
     lineTotal: moneyField,
   },
   { _id: false },
-)
+);
 
 const orderSchema = new Schema<IOrder>(
   {
     orderNumber: { type: String, required: true, unique: true },
     user: { type: Schema.Types.ObjectId, ref: "User" },
     customer: {
-      email: { type: String, required: true, lowercase: true, trim: true, maxlength: 254 },
+      email: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        maxlength: 254,
+      },
       name: { type: String, required: true, trim: true, maxlength: 100 },
       phone: { type: String, trim: true, maxlength: 30 },
     },
     shippingAddress: { type: addressSchema, required: true },
     items: {
       type: [orderItemSchema],
-      validate: { validator: (v: unknown[]) => v.length > 0, message: "Order needs at least one item" },
+      validate: {
+        validator: (v: unknown[]) => v.length > 0,
+        message: "Order needs at least one item",
+      },
     },
-    currency: { type: String, required: true, uppercase: true, minlength: 3, maxlength: 3 },
+    currency: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 3,
+      maxlength: 3,
+    },
     subtotal: moneyField,
     discountTotal: { ...moneyField, default: 0 },
     shippingTotal: { ...moneyField, default: 0 },
@@ -103,8 +132,18 @@ const orderSchema = new Schema<IOrder>(
         { _id: false },
       ),
     },
-    status: { type: String, enum: ORDER_STATUSES, default: "pending", required: true },
-    paymentStatus: { type: String, enum: PAYMENT_STATUSES, default: "unpaid", required: true },
+    status: {
+      type: String,
+      enum: ORDER_STATUSES,
+      default: "pending",
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: PAYMENT_STATUSES,
+      default: "unpaid",
+      required: true,
+    },
     payment: { provider: String, reference: String },
     notes: { type: String, trim: true, maxlength: 1000 },
     statusHistory: {
@@ -125,16 +164,16 @@ const orderSchema = new Schema<IOrder>(
     timestamps: true,
     toJSON: {
       transform(doc, ret: Record<string, unknown>) {
-        delete ret.accessTokenHash
-        return cleanJson(doc, ret)
+        delete ret.accessTokenHash;
+        return cleanJson(doc, ret);
       },
     },
   },
-)
+);
 
-orderSchema.index({ user: 1, createdAt: -1 })
-orderSchema.index({ "customer.email": 1, createdAt: -1 })
-orderSchema.index({ status: 1, createdAt: -1 })
-orderSchema.index({ createdAt: -1 })
+orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ "customer.email": 1, createdAt: -1 });
+orderSchema.index({ status: 1, createdAt: -1 });
+orderSchema.index({ createdAt: -1 });
 
-export const Order = defineModel<IOrder>("Order", orderSchema)
+export const Order = defineModel<IOrder>("Order", orderSchema);
