@@ -14,18 +14,19 @@ concurrency:
 
 jobs:
   ci:
-    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
-    runs-on: ubuntu-24.04
+    # Pinned: MongoDB 8.x refuses to start on Linux kernels 6.19-7.0.13 (SERVER-121912);
+    # ubuntu-24.04 runners now ship an affected kernel, ubuntu-22.04 stays on 6.x < 6.19.
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     env:
       MONGODB_TEST_URI: mongodb://localhost:27017/sweets_test?replicaSet=rs0
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -119,8 +120,9 @@ jobs:
   e2e:
     # Disabled until the E2E failures in CI are fixed.
     if: false
-    # Pinned: MongoDB 8.0+ crashes on Linux kernel 6.19 (SERVER-121912).
-    runs-on: ubuntu-24.04
+    # Pinned: MongoDB 8.x refuses to start on Linux kernels 6.19-7.0.13 (SERVER-121912);
+    # ubuntu-24.04 runners now ship an affected kernel, ubuntu-22.04 stays on 6.x < 6.19.
+    runs-on: ubuntu-22.04
     needs: ci
     timeout-minutes: 20
     env:
@@ -132,10 +134,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -234,7 +236,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report
           path: |
