@@ -20,6 +20,7 @@ const product = computed(() => data.value!.product);
 const { store, money } = useStore();
 const { siteUrl } = useRuntimeConfig().public;
 const cart = useCart();
+const { isAdmin } = useAuth();
 
 const activeImage = ref(0);
 watch(slug, () => (activeImage.value = 0));
@@ -153,8 +154,16 @@ useHead({
           {{ product.shortDescription }}
         </p>
 
+        <div v-if="isAdmin" class="mt-10">
+          <NuxtLink
+            :to="`/admin/products/${product.id}`"
+            class="btn-primary sm:px-10"
+          >
+            Edit product
+          </NuxtLink>
+        </div>
         <div
-          v-if="product.maxQuantity > 0"
+          v-else-if="product.maxQuantity > 0"
           class="mt-10 flex flex-wrap items-center gap-4"
         >
           <QuantityStepper
@@ -176,7 +185,11 @@ useHead({
         >
           Sold out for now — we make fresh batches every week.
         </p>
-        <p v-if="added" role="status" class="mt-4 text-sm text-cocoa-700">
+        <p
+          v-if="added && !isAdmin"
+          role="status"
+          class="mt-4 text-sm text-cocoa-700"
+        >
           Added to your bag.
           <NuxtLink
             to="/cart"
