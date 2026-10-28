@@ -39,9 +39,9 @@ async function signOut() {
     <header
       class="flex items-center justify-between bg-cocoa-950 px-5 py-4 text-cream-100 lg:hidden"
     >
-      <NuxtLink to="/admin" class="font-display text-xl"
-        >{{ store.storeName }} · Admin</NuxtLink
-      >
+      <NuxtLink to="/" class="font-display text-xl">{{
+        store.storeName
+      }}</NuxtLink>
       <button
         type="button"
         class="rounded-full border border-cream-100/30 px-4 py-1.5 text-sm"
@@ -59,12 +59,9 @@ async function signOut() {
       :class="menuOpen ? 'block' : 'hidden lg:flex'"
     >
       <div class="hidden px-6 pt-8 pb-6 lg:block">
-        <NuxtLink to="/admin" class="font-display text-2xl text-cream-100">{{
+        <NuxtLink to="/" class="font-display text-2xl text-cream-100">{{
           store.storeName
         }}</NuxtLink>
-        <p class="mt-1 text-xs tracking-widest text-gold-400 uppercase">
-          Admin
-        </p>
       </div>
       <nav aria-label="Admin" class="px-3 pb-4">
         <ul class="space-y-1">
